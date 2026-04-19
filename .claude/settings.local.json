@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"glassmorphism warm earth tones light mode travel\" --domain style -n 5)",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"serif heading sans body warm elegant travel\" --domain typography -n 5)",
+      "Bash(openspec status *)",
+      "Bash(openspec instructions *)",
+      "Bash(openspec list *)",
+      "Bash(git checkout *)",
+      "Bash(npm create *)",
+      "Bash(npm install *)",
+      "Bash(mkdir -p /Users/zealpatel/development/github-repos/nomado/backend/api /Users/zealpatel/development/github-repos/nomado/backend/lib)",
+      "Bash(npm init *)",
+      "Bash(npm run *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(npx tsc *)",
+      "Bash(git *)",
+      "Bash(gh pr *)",
+      "Bash(openspec new *)",
+      "Bash(npx tsx *)",
+      "Bash(curl -s http://localhost:3001/api/trips -H \"Authorization: Bearer test\")",
+      "Bash(curl -s http://localhost:3001/api/trips/b6028ce2-d3d8-433f-b75b-d0beda494517/items)"
+    ]
+  }
+}
