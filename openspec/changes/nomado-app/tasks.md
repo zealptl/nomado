@@ -158,17 +158,17 @@ Each task group below is its own feature branch, PR, and merge cycle:
 - [x] 11.9 Wire `EditItemModal` to `PATCH /api/trips/:id/items/:itemId` with `updated_at`; handle 409 with "Item was updated by someone else, please refresh" toast
 - [x] 11.10 Wire item delete to `DELETE /api/trips/:id/items/:itemId` with confirmation
 - [x] 11.11 Build `AddSegmentModal` / `EditSegmentModal` and wire to segment API
-- [ ] 11.12 Create PR and merge to `main`
+- [x] 11.12 Create PR and merge to `main`
 
 ---
 
 ## 12. Drag and Drop Reordering
 **Branch:** `feat/drag-and-drop`
 
-- [ ] 12.1 Wrap each `DaySection` item list in `@dnd-kit/core` `DndContext` with `SortableContext`
-- [ ] 12.2 Make each `ItemCard` a sortable item using `useSortable` hook
-- [ ] 12.3 On drag end, compute new float positions (insert between adjacent items' positions) and call `PATCH /api/trips/:id/items/reorder`
-- [ ] 12.4 Add position normalisation: if smallest gap between any two adjacent positions is < 0.001, reset all positions to 1.0, 2.0, 3.0...
+- [x] 12.1 Wrap each `DaySection` item list in `@dnd-kit/core` `DndContext` with `SortableContext`
+- [x] 12.2 Make each `ItemCard` a sortable item using `useSortable` hook
+- [x] 12.3 On drag end, compute new float positions (insert between adjacent items' positions) and call `PATCH /api/trips/:id/items/reorder`
+- [x] 12.4 Add position normalisation: if smallest gap between any two adjacent positions is < 0.001, reset all positions to 1.0, 2.0, 3.0...
 - [ ] 12.5 Create PR and merge to `main`
 
 ---
