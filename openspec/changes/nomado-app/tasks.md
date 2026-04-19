@@ -104,18 +104,18 @@ Each task group below is its own feature branch, PR, and merge cycle:
 - [x] 7.2 Create `GET /api/trips/:id/segments` — list segments for a trip
 - [x] 7.3 Create `PATCH /api/trips/:id/segments/:segId` — update segment
 - [x] 7.4 Create `DELETE /api/trips/:id/segments/:segId` — delete segment
-- [ ] 7.5 Create PR and merge to `main`
+- [x] 7.5 Create PR and merge to `main`
 
 ---
 
 ## 8. Itinerary Items API
 **Branch:** `feat/items-api`
 
-- [ ] 8.1 Create `POST /api/trips/:id/items` — create item (date, title, location, maps_url, time_start, time_end, description, tags, position)
-- [ ] 8.2 Create `GET /api/trips/:id/items` — list all items for a trip grouped by date
-- [ ] 8.3 Create `PATCH /api/trips/:id/items/:itemId` — update item; require `updated_at` in body; return HTTP 409 if `updated_at` mismatch
-- [ ] 8.4 Create `DELETE /api/trips/:id/items/:itemId` — delete item and associated photos from Storage
-- [ ] 8.5 Create `PATCH /api/trips/:id/items/reorder` — accept ordered array of `{ id, position }` for a given date; update positions in a single transaction
+- [x] 8.1 Create `POST /api/trips/:id/items` — create item (date, title, location, maps_url, time_start, time_end, description, tags, position)
+- [x] 8.2 Create `GET /api/trips/:id/items` — list all items for a trip grouped by date
+- [x] 8.3 Create `PATCH /api/trips/:id/items/:itemId` — update item; require `updated_at` in body; return HTTP 409 if `updated_at` mismatch
+- [x] 8.4 Create `DELETE /api/trips/:id/items/:itemId` — delete item and associated photos from Storage
+- [x] 8.5 Create `PATCH /api/trips/:id/items/reorder` — accept ordered array of `{ id, position }` for a given date; update positions in a single transaction
 - [ ] 8.6 Create PR and merge to `main`
 
 ---
