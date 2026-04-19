@@ -169,30 +169,30 @@ Each task group below is its own feature branch, PR, and merge cycle:
 - [x] 12.2 Make each `ItemCard` a sortable item using `useSortable` hook
 - [x] 12.3 On drag end, compute new float positions (insert between adjacent items' positions) and call `PATCH /api/trips/:id/items/reorder`
 - [x] 12.4 Add position normalisation: if smallest gap between any two adjacent positions is < 0.001, reset all positions to 1.0, 2.0, 3.0...
-- [ ] 12.5 Create PR and merge to `main`
+- [x] 12.5 Create PR and merge to `main`
 
 ---
 
 ## 13. Tag Filtering UI
 **Branch:** `feat/tag-filtering`
 
-- [ ] 13.1 Render tag pills in each `DaySection` header for all tags present in that day's items
-- [ ] 13.2 Implement active/inactive pill toggle state per day (independent across days)
-- [ ] 13.3 Filter displayed items in `DaySection` based on active pills (OR logic; show all if no pills active)
-- [ ] 13.4 Create PR and merge to `main`
+- [x] 13.1 Render tag pills in each `DaySection` header for all tags present in that day's items
+- [x] 13.2 Implement active/inactive pill toggle state per day (independent across days)
+- [x] 13.3 Filter displayed items in `DaySection` based on active pills (OR logic; show all if no pills active)
+- [x] 13.4 Create PR and merge to `main`
 
 ---
 
 ## 14. Polish & Accessibility
 **Branch:** `feat/polish`
 
-- [ ] 14.1 Audit all interactive elements for `cursor-pointer` and visible focus states
-- [ ] 14.2 Add `aria-label` to all icon-only buttons
-- [ ] 14.3 Verify all text meets 4.5:1 contrast ratio against backgrounds
-- [ ] 14.4 Add `prefers-reduced-motion` media query to disable transitions/animations
-- [ ] 14.5 Test glassmorphism fallback: add `@supports (backdrop-filter: blur(1px))` guard with solid `bg-white/90` fallback
-- [ ] 14.6 Verify responsive layout at 375px, 768px, 1024px, 1440px
-- [ ] 14.7 Verify no horizontal scroll on mobile viewports
+- [x] 14.1 Audit all interactive elements for `cursor-pointer` and visible focus states
+- [x] 14.2 Add `aria-label` to all icon-only buttons
+- [x] 14.3 Verify all text meets 4.5:1 contrast ratio against backgrounds
+- [x] 14.4 Add `prefers-reduced-motion` media query to disable transitions/animations
+- [x] 14.5 Test glassmorphism fallback: add `@supports (backdrop-filter: blur(1px))` guard with solid `bg-white/90` fallback
+- [x] 14.6 Verify responsive layout at 375px, 768px, 1024px, 1440px
+- [x] 14.7 Verify no horizontal scroll on mobile viewports
 - [ ] 14.8 Create PR and merge to `main`
 
 ---
