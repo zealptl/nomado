@@ -74,4 +74,30 @@ export const tripsApi = {
       }
     });
   },
+
+  generateInvite(id: string, refresh = false): Promise<{ token: string; url: string }> {
+    const path = refresh ? `/api/trips/${id}/invite/refresh` : `/api/trips/${id}/invite`;
+    return apiFetch(path, { method: 'POST' }).then(async r => {
+      if (!r.ok) {
+        const err = await r.json();
+        throw new Error(err.error ?? 'Failed to generate invite link');
+      }
+      return r.json();
+    });
+  },
+};
+
+export const inviteApi = {
+  accept(invite_token: string): Promise<{ tripId: string }> {
+    return apiFetch('/api/invite/accept', {
+      method: 'POST',
+      body: JSON.stringify({ invite_token }),
+    }).then(async r => {
+      if (!r.ok) {
+        const err = await r.json();
+        throw new Error(err.error ?? 'Failed to accept invite');
+      }
+      return r.json();
+    });
+  },
 };
