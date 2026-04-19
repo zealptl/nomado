@@ -93,17 +93,17 @@ Each task group below is its own feature branch, PR, and merge cycle:
 - [x] 6.1 Create `useImageUpload` hook: accepts a file, validates ≤5MB client-side, uploads to the specified Supabase Storage bucket, returns the public URL
 - [x] 6.2 Wire cover photo upload in `CreateTripModal` to `trip-covers` bucket
 - [x] 6.3 Create `PhotoUploader` component for item photos: multi-file picker, 5MB per-file validation, upload to `item-photos` bucket, display thumbnail previews
-- [ ] 6.4 Create PR and merge to `main`
+- [x] 6.4 Create PR and merge to `main`
 
 ---
 
 ## 7. Segments API
 **Branch:** `feat/segments-api`
 
-- [ ] 7.1 Create `POST /api/trips/:id/segments` — create segment (title, start_date, end_date); validate dates fall within trip date range
-- [ ] 7.2 Create `GET /api/trips/:id/segments` — list segments for a trip
-- [ ] 7.3 Create `PATCH /api/trips/:id/segments/:segId` — update segment
-- [ ] 7.4 Create `DELETE /api/trips/:id/segments/:segId` — delete segment
+- [x] 7.1 Create `POST /api/trips/:id/segments` — create segment (title, start_date, end_date); validate dates fall within trip date range
+- [x] 7.2 Create `GET /api/trips/:id/segments` — list segments for a trip
+- [x] 7.3 Create `PATCH /api/trips/:id/segments/:segId` — update segment
+- [x] 7.4 Create `DELETE /api/trips/:id/segments/:segId` — delete segment
 - [ ] 7.5 Create PR and merge to `main`
 
 ---
