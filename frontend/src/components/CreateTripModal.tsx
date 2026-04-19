@@ -1,51 +1,54 @@
-import { useRef, useState } from 'react';
-import { X, Image } from 'lucide-react';
-import { tripsApi } from '../lib/api';
-import { useImageUpload } from '../hooks/useImageUpload';
-import type { Trip } from '../types';
+import { useRef, useState } from 'react'
+import { Image, X } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogBody } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input, Label } from '@/components/ui/input'
+import { tripsApi } from '../lib/api'
+import { useImageUpload } from '../hooks/useImageUpload'
+import type { Trip } from '../types'
 
 interface CreateTripModalProps {
-  onClose: () => void;
-  onCreated: (trip: Trip) => void;
+  onClose: () => void
+  onCreated: (trip: Trip) => void
 }
 
 export default function CreateTripModal({ onClose, onCreated }: CreateTripModalProps) {
-  const [name, setName] = useState('');
-  const [destination, setDestination] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [coverImageUrl, setCoverImageUrl] = useState<string | undefined>();
-  const [coverPreview, setCoverPreview] = useState<string | null>(null);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [submitting, setSubmitting] = useState(false);
-  const coverInputRef = useRef<HTMLInputElement>(null);
-  const { uploading: uploadingCover, upload: uploadCover } = useImageUpload();
+  const [name, setName] = useState('')
+  const [destination, setDestination] = useState('')
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
+  const [coverImageUrl, setCoverImageUrl] = useState<string | undefined>()
+  const [coverPreview, setCoverPreview] = useState<string | null>(null)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [submitting, setSubmitting] = useState(false)
+  const coverInputRef = useRef<HTMLInputElement>(null)
+  const { uploading: uploadingCover, upload: uploadCover } = useImageUpload()
 
   async function handleCoverFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setCoverPreview(URL.createObjectURL(file));
-    const url = await uploadCover(file, 'trip-covers');
-    if (url) setCoverImageUrl(url);
-    else setCoverPreview(null);
+    const file = e.target.files?.[0]
+    if (!file) return
+    setCoverPreview(URL.createObjectURL(file))
+    const url = await uploadCover(file, 'trip-covers')
+    if (url) setCoverImageUrl(url)
+    else setCoverPreview(null)
   }
 
   function validate() {
-    const e: Record<string, string> = {};
-    if (!name.trim()) e.name = 'Trip name is required';
-    if (!destination.trim()) e.destination = 'Destination is required';
-    if (!startDate) e.startDate = 'Start date is required';
-    if (!endDate) e.endDate = 'End date is required';
-    if (startDate && endDate && endDate < startDate) e.endDate = 'End date must be after start date';
-    return e;
+    const e: Record<string, string> = {}
+    if (!name.trim()) e.name = 'Trip name is required'
+    if (!destination.trim()) e.destination = 'Destination is required'
+    if (!startDate) e.startDate = 'Start date is required'
+    if (!endDate) e.endDate = 'End date is required'
+    if (startDate && endDate && endDate < startDate) e.endDate = 'End date must be after start date'
+    return e
   }
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const errs = validate();
-    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+    e.preventDefault()
+    const errs = validate()
+    if (Object.keys(errs).length > 0) { setErrors(errs); return }
 
-    setSubmitting(true);
+    setSubmitting(true)
     try {
       const trip = await tripsApi.create({
         name: name.trim(),
@@ -53,51 +56,44 @@ export default function CreateTripModal({ onClose, onCreated }: CreateTripModalP
         start_date: startDate,
         end_date: endDate,
         cover_image_url: coverImageUrl,
-      });
-      onCreated(trip);
+      })
+      onCreated(trip)
     } catch (err: any) {
-      setErrors({ submit: err.message });
+      setErrors({ submit: err.message })
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
   }
 
   return (
-    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="modal" style={{ maxWidth: '480px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '24px' }}>Create Trip</h2>
-          <button
-            onClick={onClose}
-            className="btn-secondary"
-            style={{ padding: '6px', borderRadius: '8px', border: 'none', background: 'transparent' }}
-            aria-label="Close"
-          >
-            <X size={20} color="var(--color-text-muted)" />
-          </button>
-        </div>
+    <Dialog open onOpenChange={open => !open && onClose()}>
+      <DialogContent className="max-w-[480px]">
+        <DialogHeader>
+          <DialogTitle>Plan a new trip</DialogTitle>
+        </DialogHeader>
 
         <form onSubmit={handleSubmit} noValidate>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <DialogBody className="pt-5 flex flex-col gap-4">
             {/* Cover photo */}
             <div>
-              <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, marginBottom: '6px' }}>
-                Cover Photo <span style={{ fontWeight: 400, color: 'var(--color-text-muted)' }}>(optional)</span>
-              </label>
+              <Label>
+                Cover Photo{' '}
+                <span className="font-normal text-slate-400">(optional)</span>
+              </Label>
               <input
                 ref={coverInputRef}
                 type="file"
                 accept="image/*"
-                style={{ display: 'none' }}
+                className="hidden"
                 onChange={handleCoverFileChange}
               />
               {coverPreview ? (
-                <div style={{ position: 'relative', height: '120px', borderRadius: '10px', overflow: 'hidden' }}>
-                  <img src={coverPreview} alt="Cover preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <div className="relative h-32 rounded-xl overflow-hidden border border-slate-200">
+                  <img src={coverPreview} alt="Cover preview" className="w-full h-full object-cover" />
                   <button
                     type="button"
-                    onClick={() => { setCoverPreview(null); setCoverImageUrl(undefined); }}
-                    style={{ position: 'absolute', top: '6px', right: '6px', background: 'rgba(44,26,14,0.7)', border: 'none', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'white' }}
+                    onClick={() => { setCoverPreview(null); setCoverImageUrl(undefined) }}
+                    className="absolute top-2 right-2 bg-slate-900/60 hover:bg-slate-900/80 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer transition-colors"
                     aria-label="Remove cover photo"
                   >
                     <X size={12} />
@@ -108,7 +104,7 @@ export default function CreateTripModal({ onClose, onCreated }: CreateTripModalP
                   type="button"
                   onClick={() => coverInputRef.current?.click()}
                   disabled={uploadingCover}
-                  style={{ width: '100%', padding: '20px', border: '1.5px dashed rgba(124,106,90,0.4)', borderRadius: '10px', background: 'rgba(255,255,255,0.5)', color: 'var(--color-text-muted)', cursor: uploadingCover ? 'default' : 'pointer', fontSize: '14px', fontFamily: 'Inter, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                  className="w-full py-5 border-2 border-dashed border-slate-200 rounded-xl text-slate-400 text-sm font-medium flex items-center justify-center gap-2 hover:border-sky-300 hover:text-sky-500 hover:bg-sky-50/50 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-default"
                 >
                   <Image size={16} />
                   {uploadingCover ? 'Uploading…' : 'Upload Cover Photo'}
@@ -117,75 +113,67 @@ export default function CreateTripModal({ onClose, onCreated }: CreateTripModalP
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, marginBottom: '6px' }}>
-                Trip Name
-              </label>
-              <input
-                className="input"
+              <Label htmlFor="trip-name">Trip Name</Label>
+              <Input
+                id="trip-name"
                 type="text"
                 placeholder="Summer in Europe"
                 value={name}
                 onChange={e => setName(e.target.value)}
+                error={!!errors.name}
               />
-              {errors.name && <p style={{ color: 'var(--color-secondary)', fontSize: '13px', marginTop: '4px' }}>{errors.name}</p>}
+              {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, marginBottom: '6px' }}>
-                Destination
-              </label>
-              <input
-                className="input"
+              <Label htmlFor="trip-destination">Destination</Label>
+              <Input
+                id="trip-destination"
                 type="text"
                 placeholder="Spain, France, Italy"
                 value={destination}
                 onChange={e => setDestination(e.target.value)}
+                error={!!errors.destination}
               />
-              {errors.destination && <p style={{ color: 'var(--color-secondary)', fontSize: '13px', marginTop: '4px' }}>{errors.destination}</p>}
+              {errors.destination && <p className="text-red-500 text-xs mt-1">{errors.destination}</p>}
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, marginBottom: '6px' }}>
-                  Start Date
-                </label>
-                <input
-                  className="input"
+                <Label htmlFor="trip-start">Start Date</Label>
+                <Input
+                  id="trip-start"
                   type="date"
                   value={startDate}
                   onChange={e => setStartDate(e.target.value)}
+                  error={!!errors.startDate}
                 />
-                {errors.startDate && <p style={{ color: 'var(--color-secondary)', fontSize: '13px', marginTop: '4px' }}>{errors.startDate}</p>}
+                {errors.startDate && <p className="text-red-500 text-xs mt-1">{errors.startDate}</p>}
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, marginBottom: '6px' }}>
-                  End Date
-                </label>
-                <input
-                  className="input"
+                <Label htmlFor="trip-end">End Date</Label>
+                <Input
+                  id="trip-end"
                   type="date"
                   value={endDate}
                   onChange={e => setEndDate(e.target.value)}
+                  error={!!errors.endDate}
                 />
-                {errors.endDate && <p style={{ color: 'var(--color-secondary)', fontSize: '13px', marginTop: '4px' }}>{errors.endDate}</p>}
+                {errors.endDate && <p className="text-red-500 text-xs mt-1">{errors.endDate}</p>}
               </div>
             </div>
 
-            {errors.submit && (
-              <p style={{ color: 'var(--color-secondary)', fontSize: '13px' }}>{errors.submit}</p>
-            )}
+            {errors.submit && <p className="text-red-500 text-sm">{errors.submit}</p>}
+          </DialogBody>
 
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '8px' }}>
-              <button type="button" className="btn-secondary" onClick={onClose}>
-                Cancel
-              </button>
-              <button type="submit" className="btn-primary" disabled={submitting}>
-                {submitting ? 'Creating…' : 'Create Trip'}
-              </button>
-            </div>
-          </div>
+          <DialogFooter>
+            <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
+            <Button type="submit" variant="cta" disabled={submitting}>
+              {submitting ? 'Creating…' : 'Create Trip'}
+            </Button>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
-  );
+      </DialogContent>
+    </Dialog>
+  )
 }

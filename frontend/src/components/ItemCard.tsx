@@ -1,139 +1,185 @@
-import { useState } from 'react';
-import { MapPin, Clock, ExternalLink, ChevronDown, ChevronUp, Pencil, Trash2 } from 'lucide-react';
-import type { ItineraryItem } from '../types';
+import { useState } from 'react'
+import { MapPin, Clock, ExternalLink, ChevronDown, ChevronUp, Pencil, Trash2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import type { ItineraryItem } from '../types'
 
 interface ItemCardProps {
-  item: ItineraryItem & { item_photos?: { id: string; storage_url: string }[] };
-  onEdit: () => void;
-  onDelete: () => void;
+  item: ItineraryItem & { item_photos?: { id: string; storage_url: string }[] }
+  onEdit: () => void
+  onDelete: () => void
+}
+
+const TAG_ACCENTS: Record<string, string> = {
+  food: '#f97316',
+  drinks: '#06b6d4',
+  stay: '#0ea5e9',
+  activity: '#10b981',
+  'going out': '#8b5cf6',
+}
+
+function getAccentColor(tags: string[]): string {
+  for (const tag of tags) {
+    if (TAG_ACCENTS[tag]) return TAG_ACCENTS[tag]
+  }
+  return '#0ea5e9'
 }
 
 function formatTime(t: string | null) {
-  if (!t) return null;
-  const [h, m] = t.split(':');
-  const hour = parseInt(h);
-  const ampm = hour >= 12 ? 'pm' : 'am';
-  const displayHour = hour % 12 || 12;
-  return `${displayHour}:${m}${ampm}`;
+  if (!t) return null
+  const [h, m] = t.split(':')
+  const hour = parseInt(h)
+  const ampm = hour >= 12 ? 'pm' : 'am'
+  const displayHour = hour % 12 || 12
+  return `${displayHour}:${m}${ampm}`
 }
 
 export default function ItemCard({ item, onEdit, onDelete }: ItemCardProps) {
-  const [photosExpanded, setPhotosExpanded] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [photosExpanded, setPhotosExpanded] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false)
 
-  const photos = item.item_photos ?? [];
+  const photos = item.item_photos ?? []
   const timeStr = item.time_start
     ? item.time_end
       ? `${formatTime(item.time_start)} – ${formatTime(item.time_end)}`
       : formatTime(item.time_start)
-    : null;
+    : null
+
+  const accentColor = getAccentColor(item.tags)
 
   return (
-    <div className="glass-card" style={{ padding: '16px 20px' }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px' }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <h4 style={{ fontSize: '16px', marginBottom: '6px', fontWeight: 600 }}>{item.title}</h4>
+    <div className="group bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:shadow-slate-200/60 transition-all duration-200 overflow-hidden">
+      <div className="flex">
+        {/* Left accent bar */}
+        <div className="w-1 flex-shrink-0 rounded-l-xl" style={{ backgroundColor: accentColor }} />
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: item.description ? '8px' : '0' }}>
-            {item.location && (
-              <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: 'var(--color-text-muted)' }}>
-                <MapPin size={12} />
-                {item.maps_url ? (
-                  <a href={item.maps_url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)', textDecoration: 'none' }}>
-                    {item.location}
-                    <ExternalLink size={10} style={{ marginLeft: '3px', display: 'inline' }} />
-                  </a>
-                ) : item.location}
-              </span>
+        <div className="flex items-start justify-between gap-3 p-4 flex-1 min-w-0">
+          <div className="flex-1 min-w-0">
+            <h4 className="font-semibold text-slate-900 text-sm mb-1.5 leading-snug" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+              {item.title}
+            </h4>
+
+            <div className="flex flex-wrap gap-x-4 gap-y-1 mb-2">
+              {item.location && (
+                <span className="flex items-center gap-1 text-xs text-slate-400">
+                  <MapPin size={11} className="flex-shrink-0" style={{ color: accentColor }} />
+                  {item.maps_url ? (
+                    <a
+                      href={item.maps_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:underline"
+                      style={{ color: accentColor }}
+                      onClick={e => e.stopPropagation()}
+                    >
+                      {item.location}
+                      <ExternalLink size={9} className="inline ml-0.5 -mt-0.5" />
+                    </a>
+                  ) : item.location}
+                </span>
+              )}
+              {timeStr && (
+                <span className="flex items-center gap-1 text-xs text-slate-400">
+                  <Clock size={11} className="flex-shrink-0" />
+                  {timeStr}
+                </span>
+              )}
+            </div>
+
+            {item.description && (
+              <p className="text-xs text-slate-400 mb-2 leading-relaxed line-clamp-2">
+                {item.description}
+              </p>
             )}
-            {timeStr && (
-              <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: 'var(--color-text-muted)' }}>
-                <Clock size={12} />
-                {timeStr}
-              </span>
+
+            {item.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1 mb-1.5">
+                {item.tags.map(tag => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border"
+                    style={{
+                      backgroundColor: `${TAG_ACCENTS[tag] ?? '#0ea5e9'}15`,
+                      color: TAG_ACCENTS[tag] ?? '#0ea5e9',
+                      borderColor: `${TAG_ACCENTS[tag] ?? '#0ea5e9'}30`,
+                    }}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {photos.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setPhotosExpanded(e => !e)}
+                className="flex items-center gap-1 text-xs font-medium transition-colors cursor-pointer"
+                style={{ color: accentColor, background: 'none', border: 'none', padding: 0 }}
+                aria-label={photosExpanded ? 'Hide photos' : 'Show photos'}
+              >
+                {photosExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                {photos.length} photo{photos.length !== 1 ? 's' : ''}
+              </button>
+            )}
+
+            {photosExpanded && photos.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {photos.map(p => (
+                  <img
+                    key={p.id}
+                    src={p.storage_url}
+                    alt=""
+                    className="w-20 h-20 object-cover rounded-lg border border-slate-100"
+                  />
+                ))}
+              </div>
             )}
           </div>
 
-          {item.description && (
-            <p style={{ fontSize: '13px', color: 'var(--color-text-muted)', marginBottom: '8px', lineHeight: 1.5 }}>
-              {item.description}
-            </p>
-          )}
-
-          {item.tags.length > 0 && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '8px' }}>
-              {item.tags.map(tag => (
-                <span key={tag} className="pill" style={{ fontSize: '11px', padding: '2px 8px', cursor: 'default' }}>{tag}</span>
-              ))}
-            </div>
-          )}
-
-          {photos.length > 0 && (
-            <button
-              type="button"
-              onClick={() => setPhotosExpanded(e => !e)}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: 'var(--color-primary)', padding: 0 }}
-              aria-label={photosExpanded ? 'Hide photos' : 'Show photos'}
+          {/* Actions */}
+          <div className="flex gap-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={onEdit}
+              aria-label="Edit item"
+              className="text-slate-400 hover:text-sky-500 hover:bg-sky-50"
             >
-              {photosExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-              {photos.length} photo{photos.length !== 1 ? 's' : ''}
-            </button>
-          )}
-
-          {photosExpanded && photos.length > 0 && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '8px' }}>
-              {photos.map(p => (
-                <img
-                  key={p.id}
-                  src={p.storage_url}
-                  alt=""
-                  style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px' }}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
-          <button
-            className="btn-secondary"
-            style={{ padding: '6px', borderRadius: '8px', fontSize: '12px' }}
-            onClick={onEdit}
-            aria-label="Edit item"
-          >
-            <Pencil size={14} />
-          </button>
-          {confirmDelete ? (
-            <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-              <button
-                className="btn-primary"
-                style={{ padding: '5px 10px', fontSize: '12px', background: '#C67B5C' }}
-                onClick={onDelete}
-                aria-label="Confirm delete"
+              <Pencil size={13} />
+            </Button>
+            {confirmDelete ? (
+              <div className="flex gap-1 items-center">
+                <Button
+                  variant="danger"
+                  size="icon-sm"
+                  onClick={onDelete}
+                  aria-label="Confirm delete"
+                >
+                  <Trash2 size={13} />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={() => setConfirmDelete(false)}
+                  aria-label="Cancel delete"
+                >
+                  ✕
+                </Button>
+              </div>
+            ) : (
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => setConfirmDelete(true)}
+                aria-label="Delete item"
+                className="text-slate-400 hover:text-red-500 hover:bg-red-50"
               >
-                Delete
-              </button>
-              <button
-                className="btn-secondary"
-                style={{ padding: '5px 8px', fontSize: '12px' }}
-                onClick={() => setConfirmDelete(false)}
-                aria-label="Cancel delete"
-              >
-                Cancel
-              </button>
-            </div>
-          ) : (
-            <button
-              className="btn-secondary"
-              style={{ padding: '6px', borderRadius: '8px', fontSize: '12px' }}
-              onClick={() => setConfirmDelete(true)}
-              aria-label="Delete item"
-            >
-              <Trash2 size={14} />
-            </button>
-          )}
+                <Trash2 size={13} />
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>
-  );
+  )
 }
