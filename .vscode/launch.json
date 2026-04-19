@@ -1,35 +1,50 @@
 {
   "version": "0.2.0",
-  "compounds": [
-    {
-      "name": "Full Stack",
-      "configurations": ["Frontend", "Backend"],
-      "stopAll": true
-    }
-  ],
   "configurations": [
-    {
-      "name": "Frontend",
-      "type": "node",
-      "request": "launch",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "cwd": "${workspaceFolder}/frontend",
-      "console": "integratedTerminal",
-      "serverReadyAction": {
-        "pattern": "Local:.*http://localhost:([0-9]+)",
-        "uriFormat": "http://localhost:%s",
-        "action": "openExternally"
-      }
-    },
     {
       "name": "Backend",
       "type": "node",
       "request": "launch",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeExecutable": "${workspaceFolder}/backend/node_modules/.bin/tsx",
+      "args": ["${workspaceFolder}/backend/server.ts"],
       "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/backend/.env.local",
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
       "console": "integratedTerminal"
+    },
+    {
+      "name": "Frontend (Vite)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceFolder}/frontend/node_modules/.bin/vite",
+      "cwd": "${workspaceFolder}/frontend",
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Chrome (Frontend)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/frontend/src",
+      "sourceMapPathOverrides": {
+        "/@fs/*": "${workspaceFolder}/*",
+        "/@vite/*": "${workspaceFolder}/frontend/node_modules/vite/*"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack",
+      "configurations": ["Backend", "Frontend (Vite)", "Chrome (Frontend)"],
+      "stopAll": true
+    },
+    {
+      "name": "Full Stack (no browser)",
+      "configurations": ["Backend", "Frontend (Vite)"],
+      "stopAll": true
     }
   ]
 }

@@ -9,8 +9,9 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
     "rootDir": ".",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "types": ["node"]
   },
-  "include": ["api/**/*", "lib/**/*"],
+  "include": ["types/**/*", "middleware/**/*", "controllers/**/*", "routes/**/*", "lib/**/*", "server.ts", "vercel-adapter.ts"],
   "exclude": ["node_modules", "dist"]
 }
