@@ -5,10 +5,4 @@
   "framework": null,
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" }
-  ],
-  "functions": {
-    "backend/api/**/*.ts": {
-      "runtime": "nodejs20.x"
-    }
-  }
-}
+  ]}
