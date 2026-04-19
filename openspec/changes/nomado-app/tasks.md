@@ -126,20 +126,20 @@ Each task group below is its own feature branch, PR, and merge cycle:
 - [x] 9.1 Create `GET /api/trips/:id/tags` — return default tags merged with custom trip tags
 - [x] 9.2 Create `POST /api/trips/:id/tags` — create a custom tag for a trip
 - [x] 9.3 Create `DELETE /api/trips/:id/tags/:tagId` — delete a custom tag (only if no items reference it)
-- [ ] 9.4 Create PR and merge to `main`
+- [x] 9.4 Create PR and merge to `main`
 
 ---
 
 ## 10. Collaboration & Invite Links
 **Branch:** `feat/collaboration`
 
-- [ ] 10.1 Create `POST /api/trips/:id/invite` — generate a signed JWT invite token (7-day expiry), store in `trip_invites`, return the full invite URL
-- [ ] 10.2 Create `POST /api/trips/:id/invite/refresh` — regenerate invite token (invalidates old one)
-- [ ] 10.3 Create `POST /api/invite/accept` — validate invite token, check expiry, add user to `trip_collaborators` (idempotent), return trip ID
-- [ ] 10.4 Build `InviteModal` component: shows copyable invite link, "Copy Link" button wired to clipboard API
-- [ ] 10.5 Wire "Invite" button in trip header (owner only) to open `InviteModal`
-- [ ] 10.6 Build `InviteAccept` page at `/invite/:token`: if authenticated call accept API then redirect to trip; if not authenticated redirect to `/` preserving token in query param
-- [ ] 10.7 Handle invite token after post-login redirect in `AuthCallback`: check for `invite_token` query param and call accept API
+- [x] 10.1 Create `POST /api/trips/:id/invite` — generate a signed JWT invite token (7-day expiry), store in `trip_invites`, return the full invite URL
+- [x] 10.2 Create `POST /api/trips/:id/invite/refresh` — regenerate invite token (invalidates old one)
+- [x] 10.3 Create `POST /api/invite/accept` — validate invite token, check expiry, add user to `trip_collaborators` (idempotent), return trip ID
+- [x] 10.4 Build `InviteModal` component: shows copyable invite link, "Copy Link" button wired to clipboard API
+- [x] 10.5 Wire "Invite" button in trip header (owner only) to open `InviteModal`
+- [x] 10.6 Build `InviteAccept` page at `/invite/:token`: if authenticated call accept API then redirect to trip; if not authenticated redirect to `/` preserving token in query param
+- [x] 10.7 Handle invite token after post-login redirect in `AuthCallback`: check for `invite_token` query param and call accept API
 - [ ] 10.8 Create PR and merge to `main`
 
 ---
