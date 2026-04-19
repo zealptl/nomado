@@ -69,20 +69,20 @@ Each task group below is its own feature branch, PR, and merge cycle:
 - [x] 4.4 Create `GET /api/trips/:id` — get trip detail (validates owner or collaborator access)
 - [x] 4.5 Create `PATCH /api/trips/:id` — update trip fields (owner only)
 - [x] 4.6 Create `DELETE /api/trips/:id` — delete trip and cascade: segments, items, photos, collaborators, invites (owner only)
-- [ ] 4.7 Create PR and merge to `main`
+- [x] 4.7 Create PR and merge to `main`
 
 ---
 
 ## 5. Trip Dashboard UI
 **Branch:** `feat/trip-dashboard-ui`
 
-- [ ] 5.1 Build `Dashboard` page layout with "My Trips" and "Shared with Me" sections split horizontally
-- [ ] 5.2 Build `TripCard` component: glassmorphism card with cover image, title, destination, formatted date range, `cursor-pointer`, 200ms hover lift
-- [ ] 5.3 Build empty state for "My Trips" with "Create your first trip" CTA
-- [ ] 5.4 Build empty state for "Shared with Me"
-- [ ] 5.5 Build `CreateTripModal` component: modal with name, destination, date range, and optional cover photo upload fields
-- [ ] 5.6 Wire `CreateTripModal` to `POST /api/trips` and refresh trip list on success
-- [ ] 5.7 Wire trip cards to navigate to `/trips/:id`
+- [x] 5.1 Build `Dashboard` page layout with "My Trips" and "Shared with Me" sections split horizontally
+- [x] 5.2 Build `TripCard` component: glassmorphism card with cover image, title, destination, formatted date range, `cursor-pointer`, 200ms hover lift
+- [x] 5.3 Build empty state for "My Trips" with "Create your first trip" CTA
+- [x] 5.4 Build empty state for "Shared with Me"
+- [x] 5.5 Build `CreateTripModal` component: modal with name, destination, date range, and optional cover photo upload fields
+- [x] 5.6 Wire `CreateTripModal` to `POST /api/trips` and refresh trip list on success
+- [x] 5.7 Wire trip cards to navigate to `/trips/:id`
 - [ ] 5.8 Create PR and merge to `main`
 
 ---

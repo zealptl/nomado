@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
 import AuthCallback from './pages/AuthCallback'
 import Dashboard from './pages/Dashboard'
+import TripDetailPage from './pages/TripDetailPage'
 import ProtectedRoute from './components/ProtectedRoute'
 
 export default function App() {
@@ -15,6 +16,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/trips/:id"
+          element={
+            <ProtectedRoute>
+              <TripDetailPage />
             </ProtectedRoute>
           }
         />
