@@ -1,27 +1,16 @@
-import { createUserClient } from '../../../lib/supabase'
+import type { VercelRequest, VercelResponse } from '@vercel/node'
+import { getAuthenticatedUser } from '../../../lib/auth'
 
 const DEFAULT_TAGS = ['food', 'drinks', 'stay', 'activity', 'going out']
 
-function getBearerToken(req: any): string | null {
-  const auth = req.headers['authorization'] as string | undefined
-  if (!auth?.startsWith('Bearer ')) return null
-  return auth.slice(7)
-}
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  const { user, supabase } = await getAuthenticatedUser(req)
+  if (!user || !supabase) return res.status(401).json({ error: 'Unauthorized' })
 
-export default async function handler(req: any, res: any) {
-  const token = getBearerToken(req)
-  if (!token) return res.status(401).json({ error: 'Unauthorized' })
-
-  const client = createUserClient(token)
   const tripId = req.query.id as string
 
-  const {
-    data: { user },
-  } = await client.auth.getUser()
-  if (!user) return res.status(401).json({ error: 'Unauthorized' })
-
   if (req.method === 'GET') {
-    const { data: customTags, error } = await client
+    const { data: customTags, error } = await supabase
       .from('trip_tags')
       .select('id, name')
       .eq('trip_id', tripId)
@@ -36,10 +25,8 @@ export default async function handler(req: any, res: any) {
   }
 
   if (req.method === 'POST') {
-    const { name } = req.body ?? {}
-    if (!name || typeof name !== 'string' || !name.trim()) {
-      return res.status(400).json({ error: 'name is required' })
-    }
+    const { name } = (req.body ?? {}) as { name?: string }
+    if (!name?.trim()) return res.status(400).json({ error: 'name is required' })
 
     const trimmedName = name.trim().toLowerCase()
 
@@ -47,7 +34,7 @@ export default async function handler(req: any, res: any) {
       return res.status(409).json({ error: 'Tag already exists as a default tag' })
     }
 
-    const { data: existing } = await client
+    const { data: existing } = await supabase
       .from('trip_tags')
       .select('id')
       .eq('trip_id', tripId)
@@ -56,7 +43,7 @@ export default async function handler(req: any, res: any) {
 
     if (existing) return res.status(409).json({ error: 'Tag already exists' })
 
-    const { data: tag, error } = await client
+    const { data: tag, error } = await supabase
       .from('trip_tags')
       .insert({ trip_id: tripId, name: trimmedName })
       .select('id, name')
@@ -67,5 +54,5 @@ export default async function handler(req: any, res: any) {
     return res.status(201).json({ tag: { ...tag, isDefault: false } })
   }
 
-  res.status(405).json({ error: 'Method not allowed' })
+  return res.status(405).json({ error: 'Method not allowed' })
 }

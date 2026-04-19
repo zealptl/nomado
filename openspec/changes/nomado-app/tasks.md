@@ -63,12 +63,12 @@ Each task group below is its own feature branch, PR, and merge cycle:
 ## 4. Trip Management API
 **Branch:** `feat/trip-management-api`
 
-- [ ] 4.1 Create `POST /api/trips` — create trip (name, destination, start_date, end_date, cover_image_url)
-- [ ] 4.2 Create `GET /api/trips` — list trips owned by the authenticated user
-- [ ] 4.3 Create `GET /api/trips/shared` — list trips where the user is a collaborator
-- [ ] 4.4 Create `GET /api/trips/:id` — get trip detail (validates owner or collaborator access)
-- [ ] 4.5 Create `PATCH /api/trips/:id` — update trip fields (owner only)
-- [ ] 4.6 Create `DELETE /api/trips/:id` — delete trip and cascade: segments, items, photos, collaborators, invites (owner only)
+- [x] 4.1 Create `POST /api/trips` — create trip (name, destination, start_date, end_date, cover_image_url)
+- [x] 4.2 Create `GET /api/trips` — list trips owned by the authenticated user
+- [x] 4.3 Create `GET /api/trips/shared` — list trips where the user is a collaborator
+- [x] 4.4 Create `GET /api/trips/:id` — get trip detail (validates owner or collaborator access)
+- [x] 4.5 Create `PATCH /api/trips/:id` — update trip fields (owner only)
+- [x] 4.6 Create `DELETE /api/trips/:id` — delete trip and cascade: segments, items, photos, collaborators, invites (owner only)
 - [ ] 4.7 Create PR and merge to `main`
 
 ---
@@ -100,10 +100,10 @@ Each task group below is its own feature branch, PR, and merge cycle:
 ## 7. Segments API
 **Branch:** `feat/segments-api`
 
-- [ ] 7.1 Create `POST /api/trips/:id/segments` — create segment (title, start_date, end_date); validate dates fall within trip date range
-- [ ] 7.2 Create `GET /api/trips/:id/segments` — list segments for a trip
-- [ ] 7.3 Create `PATCH /api/trips/:id/segments/:segId` — update segment
-- [ ] 7.4 Create `DELETE /api/trips/:id/segments/:segId` — delete segment
+- [x] 7.1 Create `POST /api/trips/:id/segments` — create segment (title, start_date, end_date); validate dates fall within trip date range
+- [x] 7.2 Create `GET /api/trips/:id/segments` — list segments for a trip
+- [x] 7.3 Create `PATCH /api/trips/:id/segments/:segId` — update segment
+- [x] 7.4 Create `DELETE /api/trips/:id/segments/:segId` — delete segment
 - [ ] 7.5 Create PR and merge to `main`
 
 ---
@@ -111,11 +111,11 @@ Each task group below is its own feature branch, PR, and merge cycle:
 ## 8. Itinerary Items API
 **Branch:** `feat/items-api`
 
-- [ ] 8.1 Create `POST /api/trips/:id/items` — create item (date, title, location, maps_url, time_start, time_end, description, tags, position)
-- [ ] 8.2 Create `GET /api/trips/:id/items` — list all items for a trip grouped by date
-- [ ] 8.3 Create `PATCH /api/trips/:id/items/:itemId` — update item; require `updated_at` in body; return HTTP 409 if `updated_at` mismatch
-- [ ] 8.4 Create `DELETE /api/trips/:id/items/:itemId` — delete item and associated photos from Storage
-- [ ] 8.5 Create `PATCH /api/trips/:id/items/reorder` — accept ordered array of `{ id, position }` for a given date; update positions in a single transaction
+- [x] 8.1 Create `POST /api/trips/:id/items` — create item (date, title, location, maps_url, time_start, time_end, description, tags, position)
+- [x] 8.2 Create `GET /api/trips/:id/items` — list all items for a trip grouped by date
+- [x] 8.3 Create `PATCH /api/trips/:id/items/:itemId` — update item; require `updated_at` in body; return HTTP 409 if `updated_at` mismatch
+- [x] 8.4 Create `DELETE /api/trips/:id/items/:itemId` — delete item and associated photos from Storage
+- [x] 8.5 Create `PATCH /api/trips/:id/items/reorder` — accept ordered array of `{ id, position }` for a given date; update positions in a single transaction
 - [ ] 8.6 Create PR and merge to `main`
 
 ---
@@ -126,7 +126,7 @@ Each task group below is its own feature branch, PR, and merge cycle:
 - [x] 9.1 Create `GET /api/trips/:id/tags` — return default tags merged with custom trip tags
 - [x] 9.2 Create `POST /api/trips/:id/tags` — create a custom tag for a trip
 - [x] 9.3 Create `DELETE /api/trips/:id/tags/:tagId` — delete a custom tag (only if no items reference it)
-- [ ] 9.4 Create PR and merge to `main`
+- [x] 9.4 Create PR and merge to `main`
 
 ---
 
