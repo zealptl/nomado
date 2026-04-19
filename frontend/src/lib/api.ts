@@ -101,3 +101,63 @@ export const inviteApi = {
     });
   },
 };
+
+import type { TripSegment, ItineraryItem, TripTag } from '../types';
+
+export const segmentsApi = {
+  list(tripId: string): Promise<TripSegment[]> {
+    return apiFetch(`/api/trips/${tripId}/segments`).then(r => r.json());
+  },
+  create(tripId: string, data: { title: string; start_date: string; end_date: string }): Promise<TripSegment> {
+    return apiFetch(`/api/trips/${tripId}/segments`, { method: 'POST', body: JSON.stringify(data) }).then(async r => {
+      if (!r.ok) { const e = await r.json(); throw new Error(e.error ?? 'Failed'); }
+      return r.json();
+    });
+  },
+  update(tripId: string, segId: string, data: Partial<{ title: string; start_date: string; end_date: string }>): Promise<TripSegment> {
+    return apiFetch(`/api/trips/${tripId}/segments/${segId}`, { method: 'PATCH', body: JSON.stringify(data) }).then(async r => {
+      if (!r.ok) { const e = await r.json(); throw new Error(e.error ?? 'Failed'); }
+      return r.json();
+    });
+  },
+  delete(tripId: string, segId: string): Promise<void> {
+    return apiFetch(`/api/trips/${tripId}/segments/${segId}`, { method: 'DELETE' }).then(async r => {
+      if (!r.ok) { const e = await r.json(); throw new Error(e.error ?? 'Failed'); }
+    });
+  },
+};
+
+export const itemsApi = {
+  list(tripId: string): Promise<Record<string, ItineraryItem[]>> {
+    return apiFetch(`/api/trips/${tripId}/items`).then(r => r.json());
+  },
+  create(tripId: string, data: Partial<ItineraryItem> & { date: string; title: string }): Promise<ItineraryItem> {
+    return apiFetch(`/api/trips/${tripId}/items`, { method: 'POST', body: JSON.stringify(data) }).then(async r => {
+      if (!r.ok) { const e = await r.json(); throw new Error(e.error ?? 'Failed'); }
+      return r.json();
+    });
+  },
+  update(tripId: string, itemId: string, data: Partial<ItineraryItem> & { updated_at: string }): Promise<ItineraryItem> {
+    return apiFetch(`/api/trips/${tripId}/items/${itemId}`, { method: 'PATCH', body: JSON.stringify(data) }).then(async r => {
+      if (r.status === 409) throw Object.assign(new Error('conflict'), { status: 409 });
+      if (!r.ok) { const e = await r.json(); throw new Error(e.error ?? 'Failed'); }
+      return r.json();
+    });
+  },
+  delete(tripId: string, itemId: string): Promise<void> {
+    return apiFetch(`/api/trips/${tripId}/items/${itemId}`, { method: 'DELETE' }).then(async r => {
+      if (!r.ok) { const e = await r.json(); throw new Error(e.error ?? 'Failed'); }
+    });
+  },
+  reorder(tripId: string, items: { id: string; position: number }[]): Promise<void> {
+    return apiFetch(`/api/trips/${tripId}/items/reorder`, { method: 'PATCH', body: JSON.stringify({ items }) }).then(async r => {
+      if (!r.ok) { const e = await r.json(); throw new Error(e.error ?? 'Failed'); }
+    });
+  },
+};
+
+export const tagsApi = {
+  list(tripId: string): Promise<(TripTag & { isDefault: boolean })[]> {
+    return apiFetch(`/api/trips/${tripId}/tags`).then(r => r.json());
+  },
+};
