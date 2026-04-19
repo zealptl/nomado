@@ -76,15 +76,6 @@ export default function LandingPage() {
             <span>Sign in with Google</span>
           </button>
 
-          <button
-            onClick={signInWithApple}
-            className="btn-primary"
-            style={{ justifyContent: 'center', width: '100%', backgroundColor: '#000', borderColor: '#000' }}
-            aria-label="Sign in with Apple"
-          >
-            <AppleIcon />
-            <span>Sign in with Apple</span>
-          </button>
         </div>
 
         <p style={{ color: 'var(--color-text-muted)', fontSize: '12px', marginTop: '32px', lineHeight: '1.6' }}>
