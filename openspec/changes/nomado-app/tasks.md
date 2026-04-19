@@ -193,15 +193,15 @@ Each task group below is its own feature branch, PR, and merge cycle:
 - [x] 14.5 Test glassmorphism fallback: add `@supports (backdrop-filter: blur(1px))` guard with solid `bg-white/90` fallback
 - [x] 14.6 Verify responsive layout at 375px, 768px, 1024px, 1440px
 - [x] 14.7 Verify no horizontal scroll on mobile viewports
-- [ ] 14.8 Create PR and merge to `main`
+- [x] 14.8 Create PR and merge to `main`
 
 ---
 
 ## 15. Vercel Deployment
 **Branch:** `feat/deployment`
 
-- [ ] 15.1 Configure Vercel project with environment variables (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `INVITE_JWT_SECRET`)
-- [ ] 15.2 Set Supabase Auth redirect URLs for the Vercel production and preview domains
-- [ ] 15.3 Configure Apple OAuth with the production domain in Apple Developer Console
-- [ ] 15.4 Deploy to Vercel and smoke-test full flow: sign in → create trip → add segment → add items → invite collaborator → collaborator edits items
+- [x] 15.1 Configure Vercel project with environment variables (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `INVITE_JWT_SECRET`)
+- [x] 15.2 Set Supabase Auth redirect URLs for the Vercel production and preview domains
+- [x] 15.3 Configure Apple OAuth with the production domain in Apple Developer Console
+- [x] 15.4 Deploy to Vercel and smoke-test full flow: sign in → create trip → add segment → add items → invite collaborator → collaborator edits items
 - [ ] 15.5 Create PR and merge to `main`
