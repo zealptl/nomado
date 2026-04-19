@@ -49,13 +49,13 @@ Each task group below is its own feature branch, PR, and merge cycle:
 
 - [ ] 3.1 Enable Google OAuth provider in Supabase Auth dashboard and configure redirect URL
 - [ ] 3.2 Enable Apple OAuth provider in Supabase Auth dashboard and configure Apple Developer credentials
-- [ ] 3.3 Build `LandingPage` component: full-bleed warm cream background, centered glassmorphism panel, "Nomado" in Playfair Display, "Sign in with Google" and "Sign in with Apple" buttons (SVG brand icons, not emojis)
-- [ ] 3.4 Wire sign-in buttons to `supabase.auth.signInWithOAuth({ provider })` calls
-- [ ] 3.5 Create `AuthCallback` page at `/auth/callback` to handle OAuth redirect and session exchange
-- [ ] 3.6 Create `useAuth` hook that subscribes to `supabase.auth.onAuthStateChange`
-- [ ] 3.7 Create `ProtectedRoute` component that redirects unauthenticated users to `/`
-- [ ] 3.8 Redirect authenticated users away from `/` to `/dashboard`
-- [ ] 3.9 Add sign-out button in app header wired to `supabase.auth.signOut()`
+- [x] 3.3 Build `LandingPage` component: full-bleed warm cream background, centered glassmorphism panel, "Nomado" in Playfair Display, "Sign in with Google" and "Sign in with Apple" buttons (SVG brand icons, not emojis)
+- [x] 3.4 Wire sign-in buttons to `supabase.auth.signInWithOAuth({ provider })` calls
+- [x] 3.5 Create `AuthCallback` page at `/auth/callback` to handle OAuth redirect and session exchange
+- [x] 3.6 Create `useAuth` hook that subscribes to `supabase.auth.onAuthStateChange`
+- [x] 3.7 Create `ProtectedRoute` component that redirects unauthenticated users to `/`
+- [x] 3.8 Redirect authenticated users away from `/` to `/dashboard`
+- [x] 3.9 Add sign-out button in app header wired to `supabase.auth.signOut()`
 - [ ] 3.10 Create PR and merge to `main`
 
 ---
