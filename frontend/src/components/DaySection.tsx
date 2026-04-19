@@ -1,5 +1,21 @@
 import { forwardRef, useState } from 'react';
 import { Plus } from 'lucide-react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import ItemCard from './ItemCard';
 import ItemFormModal from './ItemFormModal';
 import { itemsApi } from '../lib/api';
@@ -26,6 +42,58 @@ function formatDayHeader(dateStr: string) {
   return { weekday, date };
 }
 
+function computeNewPosition(items: ItineraryItem[], fromIndex: number, toIndex: number): number {
+  const sorted = [...items].sort((a, b) => a.position - b.position);
+  const before = sorted[toIndex - 1]?.position;
+  const after = sorted[toIndex]?.position;
+
+  if (before === undefined && after === undefined) return 1.0;
+  if (before === undefined) return after! - 1.0;
+  if (after === undefined) return before + 1.0;
+  return (before + after) / 2;
+}
+
+function normalizePositions(items: ItineraryItem[]): ItineraryItem[] {
+  const sorted = [...items].sort((a, b) => a.position - b.position);
+  const minGap = sorted.reduce((min, item, i) => {
+    if (i === 0) return min;
+    return Math.min(min, item.position - sorted[i - 1].position);
+  }, Infinity);
+
+  if (minGap >= 0.001) return items;
+
+  // Reset to 1.0, 2.0, 3.0...
+  return sorted.map((item, i) => ({ ...item, position: i + 1 }));
+}
+
+function SortableItem({
+  item,
+  onEdit,
+  onDelete,
+}: {
+  item: ItineraryItem & { item_photos?: { id: string; storage_url: string }[] };
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id });
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.5 : 1,
+        cursor: 'grab',
+      }}
+      {...attributes}
+      {...listeners}
+    >
+      <ItemCard item={item} onEdit={onEdit} onDelete={onDelete} />
+    </div>
+  );
+}
+
 const DaySection = forwardRef<HTMLDivElement, DaySectionProps>(
   function DaySection({ date, tripId, items, availableTags, onItemsChange }, ref) {
     const [activeTags, setActiveTags] = useState<string[]>([]);
@@ -35,10 +103,16 @@ const DaySection = forwardRef<HTMLDivElement, DaySectionProps>(
     const [modalError, setModalError] = useState<string | null>(null);
     const [toastMsg, setToastMsg] = useState<string | null>(null);
 
-    const tagsInDay = [...new Set(items.flatMap(i => i.tags))];
+    const sensors = useSensors(
+      useSensor(PointerSensor),
+      useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+    );
+
+    const sortedItems = [...items].sort((a, b) => a.position - b.position);
+    const tagsInDay = [...new Set(sortedItems.flatMap(i => i.tags))];
     const displayedItems = activeTags.length > 0
-      ? items.filter(i => i.tags.some(t => activeTags.includes(t)))
-      : items;
+      ? sortedItems.filter(i => i.tags.some(t => activeTags.includes(t)))
+      : sortedItems;
 
     function toggleTag(tag: string) {
       setActiveTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]);
@@ -47,6 +121,39 @@ const DaySection = forwardRef<HTMLDivElement, DaySectionProps>(
     function showToast(msg: string) {
       setToastMsg(msg);
       setTimeout(() => setToastMsg(null), 3000);
+    }
+
+    async function handleDragEnd(event: DragEndEvent) {
+      const { active, over } = event;
+      if (!over || active.id === over.id) return;
+
+      const fromIndex = sortedItems.findIndex(i => i.id === active.id);
+      const toIndex = sortedItems.findIndex(i => i.id === over.id);
+      if (fromIndex === -1 || toIndex === -1) return;
+
+      // Move the item in the list
+      const reordered = [...sortedItems];
+      const [moved] = reordered.splice(fromIndex, 1);
+      reordered.splice(toIndex, 0, moved);
+
+      // Compute new position for the moved item
+      const newPos = computeNewPosition(reordered, toIndex, toIndex);
+      const updatedMoved = { ...moved, position: newPos };
+      const updated = reordered.map((item, i) => item.id === moved.id ? updatedMoved : item);
+
+      // Normalize if needed
+      const normalized = normalizePositions(updated);
+      onItemsChange(date, normalized);
+
+      // Persist
+      try {
+        await itemsApi.reorder(
+          tripId,
+          normalized.map(i => ({ id: i.id, position: i.position })),
+        );
+      } catch {
+        showToast('Failed to save order. Please refresh.');
+      }
     }
 
     async function handleAddItem(data: Partial<ItineraryItem> & { photos?: string[] }) {
@@ -92,14 +199,12 @@ const DaySection = forwardRef<HTMLDivElement, DaySectionProps>(
 
     return (
       <div ref={ref} data-day={date} style={{ marginBottom: '40px' }}>
-        {/* Toast */}
         {toastMsg && (
           <div style={{ position: 'fixed', bottom: '24px', left: '50%', transform: 'translateX(-50%)', background: '#2C1A0E', color: 'white', padding: '12px 20px', borderRadius: '10px', fontSize: '14px', zIndex: 100 }}>
             {toastMsg}
           </div>
         )}
 
-        {/* Day header */}
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '16px', gap: '12px' }}>
           <div>
             <h3 style={{ fontSize: '20px', marginBottom: '2px' }}>{weekday}</h3>
@@ -130,26 +235,28 @@ const DaySection = forwardRef<HTMLDivElement, DaySectionProps>(
           </button>
         </div>
 
-        {/* Items */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {displayedItems.length === 0 && (
-            <div style={{ padding: '24px', textAlign: 'center', background: 'rgba(255,255,255,0.3)', borderRadius: '12px', border: '2px dashed rgba(124,106,90,0.15)' }}>
-              <p style={{ fontSize: '13px', color: 'var(--color-text-muted)' }}>
-                {activeTags.length > 0 ? 'No items match the selected tags.' : 'No items yet — click "Add Item" to start planning.'}
-              </p>
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={sortedItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {displayedItems.length === 0 && (
+                <div style={{ padding: '24px', textAlign: 'center', background: 'rgba(255,255,255,0.3)', borderRadius: '12px', border: '2px dashed rgba(124,106,90,0.15)' }}>
+                  <p style={{ fontSize: '13px', color: 'var(--color-text-muted)' }}>
+                    {activeTags.length > 0 ? 'No items match the selected tags.' : 'No items yet — click "Add Item" to start planning.'}
+                  </p>
+                </div>
+              )}
+              {displayedItems.map(item => (
+                <SortableItem
+                  key={item.id}
+                  item={item}
+                  onEdit={() => { setEditItem(item); setModalError(null); }}
+                  onDelete={() => handleDeleteItem(item.id)}
+                />
+              ))}
             </div>
-          )}
-          {displayedItems.map(item => (
-            <ItemCard
-              key={item.id}
-              item={item}
-              onEdit={() => { setEditItem(item); setModalError(null); }}
-              onDelete={() => handleDeleteItem(item.id)}
-            />
-          ))}
-        </div>
+          </SortableContext>
+        </DndContext>
 
-        {/* Modals */}
         {addOpen && (
           <ItemFormModal
             initialDate={date}
