@@ -140,24 +140,24 @@ Each task group below is its own feature branch, PR, and merge cycle:
 - [x] 10.5 Wire "Invite" button in trip header (owner only) to open `InviteModal`
 - [x] 10.6 Build `InviteAccept` page at `/invite/:token`: if authenticated call accept API then redirect to trip; if not authenticated redirect to `/` preserving token in query param
 - [x] 10.7 Handle invite token after post-login redirect in `AuthCallback`: check for `invite_token` query param and call accept API
-- [ ] 10.8 Create PR and merge to `main`
+- [x] 10.8 Create PR and merge to `main`
 
 ---
 
 ## 11. Trip Detail View
 **Branch:** `feat/trip-detail-view`
 
-- [ ] 11.1 Build `TripDetailPage` layout: fixed left panel (280px) + scrollable right panel; on mobile render two tabs "Overview" / "Days"
-- [ ] 11.2 Build `SegmentNav` component for left panel: segments as headers, days as links beneath each; render boundary days under two segments with checkout/checkin badges
-- [ ] 11.3 Implement smooth-scroll to day on left panel day click using `scrollIntoView`
-- [ ] 11.4 Implement active day highlight in left panel using `IntersectionObserver` on day section headers
-- [ ] 11.5 Build `DaySection` component: day header with formatted date + tag filter pills + "Add Item" button, followed by item list
-- [ ] 11.6 Build `ItemCard` component: compact view showing title, location, time, and tag pills; photos collapsed by default, expandable; edit and delete actions on hover/tap
-- [ ] 11.7 Build `AddItemModal` / `EditItemModal`: form with all item fields (title, location, maps_url, time, description, tags, photos via `PhotoUploader`)
-- [ ] 11.8 Wire `AddItemModal` to `POST /api/trips/:id/items`
-- [ ] 11.9 Wire `EditItemModal` to `PATCH /api/trips/:id/items/:itemId` with `updated_at`; handle 409 with "Item was updated by someone else, please refresh" toast
-- [ ] 11.10 Wire item delete to `DELETE /api/trips/:id/items/:itemId` with confirmation
-- [ ] 11.11 Build `AddSegmentModal` / `EditSegmentModal` and wire to segment API
+- [x] 11.1 Build `TripDetailPage` layout: fixed left panel (280px) + scrollable right panel; on mobile render two tabs "Overview" / "Days"
+- [x] 11.2 Build `SegmentNav` component for left panel: segments as headers, days as links beneath each; render boundary days under two segments with checkout/checkin badges
+- [x] 11.3 Implement smooth-scroll to day on left panel day click using `scrollIntoView`
+- [x] 11.4 Implement active day highlight in left panel using `IntersectionObserver` on day section headers
+- [x] 11.5 Build `DaySection` component: day header with formatted date + tag filter pills + "Add Item" button, followed by item list
+- [x] 11.6 Build `ItemCard` component: compact view showing title, location, time, and tag pills; photos collapsed by default, expandable; edit and delete actions on hover/tap
+- [x] 11.7 Build `AddItemModal` / `EditItemModal`: form with all item fields (title, location, maps_url, time, description, tags, photos via `PhotoUploader`)
+- [x] 11.8 Wire `AddItemModal` to `POST /api/trips/:id/items`
+- [x] 11.9 Wire `EditItemModal` to `PATCH /api/trips/:id/items/:itemId` with `updated_at`; handle 409 with "Item was updated by someone else, please refresh" toast
+- [x] 11.10 Wire item delete to `DELETE /api/trips/:id/items/:itemId` with confirmation
+- [x] 11.11 Build `AddSegmentModal` / `EditSegmentModal` and wire to segment API
 - [ ] 11.12 Create PR and merge to `main`
 
 ---
