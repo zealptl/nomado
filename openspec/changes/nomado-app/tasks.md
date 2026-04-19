@@ -204,4 +204,4 @@ Each task group below is its own feature branch, PR, and merge cycle:
 - [x] 15.2 Set Supabase Auth redirect URLs for the Vercel production and preview domains
 - [x] 15.3 Configure Apple OAuth with the production domain in Apple Developer Console
 - [x] 15.4 Deploy to Vercel and smoke-test full flow: sign in → create trip → add segment → add items → invite collaborator → collaborator edits items
-- [ ] 15.5 Create PR and merge to `main`
+- [x] 15.5 Create PR and merge to `main`
