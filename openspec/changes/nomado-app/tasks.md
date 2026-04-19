@@ -29,18 +29,18 @@ Each task group below is its own feature branch, PR, and merge cycle:
 ## 2. Database Schema & RLS
 **Branch:** `feat/database-schema`
 
-- [ ] 2.1 Create `profiles` table (`id` FK to auth.users, `full_name`, `avatar_url`)
-- [ ] 2.2 Create `trips` table (`id`, `owner_id`, `name`, `destination`, `start_date`, `end_date`, `cover_image_url`, `created_at`)
-- [ ] 2.3 Create `trip_segments` table (`id`, `trip_id`, `title`, `start_date`, `end_date`, `created_at`)
-- [ ] 2.4 Create `itinerary_items` table (`id`, `trip_id`, `date`, `title`, `location`, `maps_url`, `time_start`, `time_end`, `description`, `position` float, `tags` text[], `updated_at`, `created_at`)
-- [ ] 2.5 Create `item_photos` table (`id`, `item_id`, `storage_url`, `created_at`)
-- [ ] 2.6 Create `trip_collaborators` table (`id`, `trip_id`, `user_id`, `joined_at`)
-- [ ] 2.7 Create `trip_tags` table (`id`, `trip_id`, `name`) for custom per-trip tags
-- [ ] 2.8 Create `trip_invites` table (`id`, `trip_id`, `token`, `expires_at`, `created_at`)
-- [ ] 2.9 Write RLS policies: trip owner has full access; collaborators can read/write items and segments; no access for non-members
-- [ ] 2.10 Create Supabase Storage buckets: `trip-covers` (public) and `item-photos` (public)
-- [ ] 2.11 Set Storage policies: authenticated users can upload; public read access
-- [ ] 2.12 Create PR and merge to `main`
+- [x] 2.1 Create `profiles` table (`id` FK to auth.users, `full_name`, `avatar_url`)
+- [x] 2.2 Create `trips` table (`id`, `owner_id`, `name`, `destination`, `start_date`, `end_date`, `cover_image_url`, `created_at`)
+- [x] 2.3 Create `trip_segments` table (`id`, `trip_id`, `title`, `start_date`, `end_date`, `created_at`)
+- [x] 2.4 Create `itinerary_items` table (`id`, `trip_id`, `date`, `title`, `location`, `maps_url`, `time_start`, `time_end`, `description`, `position` float, `tags` text[], `updated_at`, `created_at`)
+- [x] 2.5 Create `item_photos` table (`id`, `item_id`, `storage_url`, `created_at`)
+- [x] 2.6 Create `trip_collaborators` table (`id`, `trip_id`, `user_id`, `joined_at`)
+- [x] 2.7 Create `trip_tags` table (`id`, `trip_id`, `name`) for custom per-trip tags
+- [x] 2.8 Create `trip_invites` table (`id`, `trip_id`, `token`, `expires_at`, `created_at`)
+- [x] 2.9 Write RLS policies: trip owner has full access; collaborators can read/write items and segments; no access for non-members
+- [x] 2.10 Create Supabase Storage buckets: `trip-covers` (public) and `item-photos` (public)
+- [x] 2.11 Set Storage policies: authenticated users can upload; public read access
+- [x] 2.12 Create PR and merge to `main`
 
 ---
 

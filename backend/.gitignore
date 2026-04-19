@@ -1,6 +1,5 @@
 node_modules/
 dist/
-.vercel
 
 # Env files — never commit real credentials
 .env
