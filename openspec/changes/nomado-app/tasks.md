@@ -83,16 +83,16 @@ Each task group below is its own feature branch, PR, and merge cycle:
 - [x] 5.5 Build `CreateTripModal` component: modal with name, destination, date range, and optional cover photo upload fields
 - [x] 5.6 Wire `CreateTripModal` to `POST /api/trips` and refresh trip list on success
 - [x] 5.7 Wire trip cards to navigate to `/trips/:id`
-- [ ] 5.8 Create PR and merge to `main`
+- [x] 5.8 Create PR and merge to `main`
 
 ---
 
 ## 6. Image Upload
 **Branch:** `feat/image-uploads`
 
-- [ ] 6.1 Create `useImageUpload` hook: accepts a file, validates ≤5MB client-side, uploads to the specified Supabase Storage bucket, returns the public URL
-- [ ] 6.2 Wire cover photo upload in `CreateTripModal` to `trip-covers` bucket
-- [ ] 6.3 Create `PhotoUploader` component for item photos: multi-file picker, 5MB per-file validation, upload to `item-photos` bucket, display thumbnail previews
+- [x] 6.1 Create `useImageUpload` hook: accepts a file, validates ≤5MB client-side, uploads to the specified Supabase Storage bucket, returns the public URL
+- [x] 6.2 Wire cover photo upload in `CreateTripModal` to `trip-covers` bucket
+- [x] 6.3 Create `PhotoUploader` component for item photos: multi-file picker, 5MB per-file validation, upload to `item-photos` bucket, display thumbnail previews
 - [ ] 6.4 Create PR and merge to `main`
 
 ---
