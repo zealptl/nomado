@@ -231,6 +231,12 @@ p {
   outline-offset: 2px;
 }
 
+/* Focus visible for any focusable element not already styled */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -239,5 +245,12 @@ p {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* Responsive: no horizontal scroll on mobile */
+@media (max-width: 767px) {
+  body {
+    overflow-x: hidden;
   }
 }
