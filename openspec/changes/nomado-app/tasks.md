@@ -63,12 +63,12 @@ Each task group below is its own feature branch, PR, and merge cycle:
 ## 4. Trip Management API
 **Branch:** `feat/trip-management-api`
 
-- [ ] 4.1 Create `POST /api/trips` — create trip (name, destination, start_date, end_date, cover_image_url)
-- [ ] 4.2 Create `GET /api/trips` — list trips owned by the authenticated user
-- [ ] 4.3 Create `GET /api/trips/shared` — list trips where the user is a collaborator
-- [ ] 4.4 Create `GET /api/trips/:id` — get trip detail (validates owner or collaborator access)
-- [ ] 4.5 Create `PATCH /api/trips/:id` — update trip fields (owner only)
-- [ ] 4.6 Create `DELETE /api/trips/:id` — delete trip and cascade: segments, items, photos, collaborators, invites (owner only)
+- [x] 4.1 Create `POST /api/trips` — create trip (name, destination, start_date, end_date, cover_image_url)
+- [x] 4.2 Create `GET /api/trips` — list trips owned by the authenticated user
+- [x] 4.3 Create `GET /api/trips/shared` — list trips where the user is a collaborator
+- [x] 4.4 Create `GET /api/trips/:id` — get trip detail (validates owner or collaborator access)
+- [x] 4.5 Create `PATCH /api/trips/:id` — update trip fields (owner only)
+- [x] 4.6 Create `DELETE /api/trips/:id` — delete trip and cascade: segments, items, photos, collaborators, invites (owner only)
 - [ ] 4.7 Create PR and merge to `main`
 
 ---
