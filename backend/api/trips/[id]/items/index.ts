@@ -1,17 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { createUserClient } from '../../../../lib/supabase'
-
-function getToken(req: VercelRequest): string | null {
-  const auth = req.headers.authorization
-  if (!auth?.startsWith('Bearer ')) return null
-  return auth.slice(7)
-}
+import { getAuthenticatedUser } from '../../../../lib/auth'
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const token = getToken(req)
-  if (!token) return res.status(401).json({ error: 'Unauthorized' })
+  const { user, supabase } = await getAuthenticatedUser(req)
+  if (!user || !supabase) return res.status(401).json({ error: 'Unauthorized' })
 
-  const supabase = createUserClient(token)
   const tripId = req.query.id as string
 
   if (req.method === 'GET') {

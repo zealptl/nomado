@@ -1,23 +1,16 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { createUserClient, supabaseAdmin } from '../../../../lib/supabase'
-
-function getToken(req: VercelRequest): string | null {
-  const auth = req.headers.authorization
-  if (!auth?.startsWith('Bearer ')) return null
-  return auth.slice(7)
-}
+import { getAuthenticatedUser } from '../../../../lib/auth'
+import { supabaseAdmin } from '../../../../lib/supabase'
 
 function storagePathFromUrl(url: string): string | null {
-  // Extract key after /object/public/<bucket>/
   const match = url.match(/\/object\/public\/[^/]+\/(.+)$/)
   return match ? match[1]! : null
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const token = getToken(req)
-  if (!token) return res.status(401).json({ error: 'Unauthorized' })
+  const { user, supabase } = await getAuthenticatedUser(req)
+  if (!user || !supabase) return res.status(401).json({ error: 'Unauthorized' })
 
-  const supabase = createUserClient(token)
   const tripId = req.query.id as string
   const itemId = req.query.itemId as string
 
@@ -26,7 +19,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (!updated_at) return res.status(400).json({ error: 'updated_at is required' })
 
-    // Check for concurrent edit conflict
     const { data: current, error: fetchError } = await supabase
       .from('itinerary_items')
       .select('updated_at')
@@ -55,13 +47,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (req.method === 'DELETE') {
-    // Fetch associated photos before deleting
     const { data: photos } = await supabase
       .from('item_photos')
       .select('storage_url')
       .eq('item_id', itemId)
 
-    // Delete item (FK cascade removes item_photos rows)
     const { error } = await supabase
       .from('itinerary_items')
       .delete()
@@ -70,7 +60,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (error) return res.status(500).json({ error: error.message })
 
-    // Clean up storage objects after successful DB delete
     if (photos && photos.length > 0) {
       const paths = photos
         .map((p) => storagePathFromUrl(p.storage_url))

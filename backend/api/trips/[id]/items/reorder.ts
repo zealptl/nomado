@@ -1,11 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { createUserClient } from '../../../../lib/supabase'
-
-function getToken(req: VercelRequest): string | null {
-  const auth = req.headers.authorization
-  if (!auth?.startsWith('Bearer ')) return null
-  return auth.slice(7)
-}
+import { getAuthenticatedUser } from '../../../../lib/auth'
 
 interface ReorderEntry {
   id: string
@@ -15,10 +9,9 @@ interface ReorderEntry {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'PATCH') return res.status(405).json({ error: 'Method not allowed' })
 
-  const token = getToken(req)
-  if (!token) return res.status(401).json({ error: 'Unauthorized' })
+  const { user, supabase } = await getAuthenticatedUser(req)
+  if (!user || !supabase) return res.status(401).json({ error: 'Unauthorized' })
 
-  const supabase = createUserClient(token)
   const tripId = req.query.id as string
 
   const { items } = req.body ?? {}
@@ -27,9 +20,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const entries = items as ReorderEntry[]
-
-  // Validate all items belong to this trip before updating
   const ids = entries.map((e) => e.id)
+
+  // Verify all items belong to this trip before updating
   const { data: existing, error: fetchError } = await supabase
     .from('itinerary_items')
     .select('id')
@@ -41,7 +34,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(403).json({ error: 'One or more items do not belong to this trip' })
   }
 
-  // Update positions sequentially (Supabase JS client has no multi-row update in one call)
   const updates = await Promise.all(
     entries.map(({ id, position }) =>
       supabase

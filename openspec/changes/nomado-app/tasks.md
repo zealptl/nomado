@@ -123,9 +123,9 @@ Each task group below is its own feature branch, PR, and merge cycle:
 ## 9. Tags API
 **Branch:** `feat/tags-api`
 
-- [ ] 9.1 Create `GET /api/trips/:id/tags` — return default tags merged with custom trip tags
-- [ ] 9.2 Create `POST /api/trips/:id/tags` — create a custom tag for a trip
-- [ ] 9.3 Create `DELETE /api/trips/:id/tags/:tagId` — delete a custom tag (only if no items reference it)
+- [x] 9.1 Create `GET /api/trips/:id/tags` — return default tags merged with custom trip tags
+- [x] 9.2 Create `POST /api/trips/:id/tags` — create a custom tag for a trip
+- [x] 9.3 Create `DELETE /api/trips/:id/tags/:tagId` — delete a custom tag (only if no items reference it)
 - [ ] 9.4 Create PR and merge to `main`
 
 ---
