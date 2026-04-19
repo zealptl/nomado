@@ -1,116 +1,145 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Plus, MapPin } from 'lucide-react';
-import AppHeader from '../components/AppHeader';
-import TripCard from '../components/TripCard';
-import CreateTripModal from '../components/CreateTripModal';
-import { tripsApi } from '../lib/api';
-import type { Trip } from '../types';
-
-function EmptyMyTrips({ onCreateClick }: { onCreateClick: () => void }) {
-  return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '48px 24px',
-      textAlign: 'center',
-      gap: '16px',
-      background: 'rgba(255,255,255,0.4)',
-      borderRadius: '16px',
-      border: '2px dashed rgba(124,106,90,0.2)',
-    }}>
-      <MapPin size={40} color="var(--color-accent)" strokeWidth={1.5} />
-      <div>
-        <h3 style={{ fontSize: '18px', marginBottom: '8px' }}>No trips yet</h3>
-        <p style={{ color: 'var(--color-text-muted)', fontSize: '14px', marginBottom: '20px' }}>
-          Plan your first adventure and start adding destinations, days, and memories.
-        </p>
-        <button className="btn-primary" onClick={onCreateClick}>
-          <Plus size={16} />
-          Create your first trip
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function EmptySharedTrips() {
-  return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '40px 24px',
-      textAlign: 'center',
-      background: 'rgba(255,255,255,0.4)',
-      borderRadius: '16px',
-      border: '2px dashed rgba(124,106,90,0.2)',
-    }}>
-      <p style={{ color: 'var(--color-text-muted)', fontSize: '14px' }}>
-        Trips shared with you will appear here.
-      </p>
-    </div>
-  );
-}
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Plus, Compass, Users } from 'lucide-react'
+import AppHeader from '../components/AppHeader'
+import TripCard from '../components/TripCard'
+import CreateTripModal from '../components/CreateTripModal'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/components/ui/button'
+import { tripsApi } from '../lib/api'
+import { useAuth } from '../hooks/useAuth'
+import type { Trip } from '../types'
 
 function TripGrid({ trips, onTripClick }: { trips: Trip[]; onTripClick: (id: string) => void }) {
   return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-      gap: '20px',
-    }}>
+    <div className="grid gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))' }}>
       {trips.map(trip => (
         <TripCard key={trip.id} trip={trip} onClick={() => onTripClick(trip.id)} />
       ))}
     </div>
-  );
+  )
+}
+
+function LoadingGrid() {
+  return (
+    <div className="grid gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))' }}>
+      {[1, 2, 3].map(i => (
+        <div key={i} className="bg-white rounded-2xl overflow-hidden border border-slate-100">
+          <Skeleton className="h-48 w-full rounded-none" />
+          <div className="p-4 flex flex-col gap-2">
+            <Skeleton className="h-5 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+            <Skeleton className="h-3 w-2/3" />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function EmptyMyTrips({ onCreateClick }: { onCreateClick: () => void }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-16 px-6 text-center bg-white rounded-2xl border-2 border-dashed border-slate-200">
+      <div className="w-14 h-14 rounded-2xl bg-sky-50 flex items-center justify-center mb-4">
+        <Compass size={24} className="text-sky-500" />
+      </div>
+      <h3 className="text-lg font-bold text-slate-900 mb-1" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+        No trips yet
+      </h3>
+      <p className="text-slate-400 text-sm mb-6 max-w-xs">
+        Plan your first adventure — add destinations, schedule days, and invite friends.
+      </p>
+      <Button variant="cta" onClick={onCreateClick}>
+        <Plus size={16} />
+        Create your first trip
+      </Button>
+    </div>
+  )
+}
+
+function EmptySharedTrips() {
+  return (
+    <div className="flex flex-col items-center justify-center py-10 px-6 text-center bg-white rounded-2xl border-2 border-dashed border-slate-200">
+      <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center mb-3">
+        <Users size={20} className="text-slate-400" />
+      </div>
+      <p className="text-slate-400 text-sm">
+        Trips shared with you will appear here.
+      </p>
+    </div>
+  )
 }
 
 export default function Dashboard() {
-  const navigate = useNavigate();
-  const [myTrips, setMyTrips] = useState<Trip[]>([]);
-  const [sharedTrips, setSharedTrips] = useState<Trip[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showCreate, setShowCreate] = useState(false);
+  const navigate = useNavigate()
+  const { user } = useAuth()
+  const [myTrips, setMyTrips] = useState<Trip[]>([])
+  const [sharedTrips, setSharedTrips] = useState<Trip[]>([])
+  const [loading, setLoading] = useState(true)
+  const [showCreate, setShowCreate] = useState(false)
 
   useEffect(() => {
     Promise.all([tripsApi.list(), tripsApi.listShared()])
       .then(([mine, shared]) => {
-        setMyTrips(mine);
-        setSharedTrips(shared);
+        setMyTrips(mine)
+        setSharedTrips(shared)
       })
-      .finally(() => setLoading(false));
-  }, []);
+      .finally(() => setLoading(false))
+  }, [])
 
   function handleTripCreated(trip: Trip) {
-    setMyTrips(prev => [trip, ...prev]);
-    setShowCreate(false);
-    navigate(`/trips/${trip.id}`);
+    setMyTrips(prev => [trip, ...prev])
+    setShowCreate(false)
+    navigate(`/trips/${trip.id}`)
   }
 
+  const firstName = user?.email?.split('@')[0] ?? 'there'
+
   return (
-    <div style={{ minHeight: '100vh' }}>
+    <div className="min-h-screen bg-slate-50">
       <AppHeader />
-      <main style={{ padding: '40px 24px', maxWidth: '1200px', margin: '0 auto' }}>
+
+      <main className="max-w-6xl mx-auto px-6 py-10">
+        {/* Page header */}
+        <div className="mb-10">
+          <p className="text-sky-500 text-sm font-semibold uppercase tracking-widest mb-1">Dashboard</p>
+          <h1
+            className="text-4xl font-extrabold text-slate-900 tracking-tight"
+            style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+          >
+            Hey, {firstName} 👋
+          </h1>
+          <p className="text-slate-400 mt-1 text-base">Where to next?</p>
+        </div>
+
         {loading ? (
-          <p style={{ color: 'var(--color-text-muted)', textAlign: 'center', paddingTop: '80px' }}>
-            Loading trips…
-          </p>
+          <div className="flex flex-col gap-12">
+            <section>
+              <div className="flex items-center justify-between mb-6">
+                <Skeleton className="h-7 w-32" />
+                <Skeleton className="h-10 w-28" />
+              </div>
+              <LoadingGrid />
+            </section>
+          </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
+          <div className="flex flex-col gap-12">
             {/* My Trips */}
             <section>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-                <h1 style={{ fontSize: '28px' }}>My Trips</h1>
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                    My Trips
+                  </h2>
+                  {myTrips.length > 0 && (
+                    <p className="text-slate-400 text-sm mt-0.5">{myTrips.length} {myTrips.length === 1 ? 'trip' : 'trips'}</p>
+                  )}
+                </div>
                 {myTrips.length > 0 && (
-                  <button className="btn-primary" onClick={() => setShowCreate(true)}>
+                  <Button variant="primary" onClick={() => setShowCreate(true)}>
                     <Plus size={16} />
                     New Trip
-                  </button>
+                  </Button>
                 )}
               </div>
               {myTrips.length === 0 ? (
@@ -121,14 +150,26 @@ export default function Dashboard() {
             </section>
 
             {/* Shared with Me */}
-            <section>
-              <h2 style={{ fontSize: '24px', marginBottom: '24px' }}>Shared with Me</h2>
-              {sharedTrips.length === 0 ? (
-                <EmptySharedTrips />
-              ) : (
+            {sharedTrips.length > 0 && (
+              <section>
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                    Shared with Me
+                  </h2>
+                  <p className="text-slate-400 text-sm mt-0.5">{sharedTrips.length} {sharedTrips.length === 1 ? 'trip' : 'trips'}</p>
+                </div>
                 <TripGrid trips={sharedTrips} onTripClick={id => navigate(`/trips/${id}`)} />
-              )}
-            </section>
+              </section>
+            )}
+
+            {sharedTrips.length === 0 && myTrips.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-bold text-slate-900 mb-6" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                  Shared with Me
+                </h2>
+                <EmptySharedTrips />
+              </section>
+            )}
           </div>
         )}
       </main>
@@ -140,5 +181,5 @@ export default function Dashboard() {
         />
       )}
     </div>
-  );
+  )
 }

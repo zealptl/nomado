@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
+import { Button } from '@/components/ui/button'
 
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -12,9 +13,9 @@ const GoogleIcon = () => (
   </svg>
 )
 
-const AppleIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 814 1000" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76.5 0-103.7 40.8-165.9 40.8s-105-37.5-155.5-127.4C46.5 803 0 663 0 527.9c0-203.4 132.4-310.9 262.9-310.9 71.2 0 130.3 46.8 174.9 46.8 42.8 0 109.8-49.7 188.4-49.7 24 0 108.2 2.6 168.6 71.4zm-174.4-241.3C642.3 63.1 685.4 0 685.4 0c.6 1.3-96.9 55.8-131.2 124.6-28.5 58.1-71.6 126.1-84.9 143.1-.5-.6-24-11.3-80.9-11.3 11.4-30.2 24-76.9 115.2-157.1z"/>
+const PlaneIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 4c-1 0-2 .5-2.8 1.3L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>
   </svg>
 )
 
@@ -35,52 +36,75 @@ export default function LandingPage() {
     })
   }
 
-  const signInWithApple = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'apple',
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
-    })
-  }
-
   if (loading) return null
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: 'var(--space-md)',
-    }}>
-      <div className="glass-card" style={{
-        padding: '56px 48px',
-        textAlign: 'center',
-        maxWidth: '440px',
-        width: '100%',
-      }}>
-        <h1 style={{ fontSize: '52px', fontWeight: 700, marginBottom: '8px', letterSpacing: '-0.5px' }}>
-          Nomado
-        </h1>
-        <p style={{ color: 'var(--color-text-muted)', fontSize: '16px', marginBottom: '48px' }}>
-          Plan your next adventure together
-        </p>
+    <div className="min-h-screen flex flex-col">
+      {/* Hero gradient background */}
+      <div
+        className="flex-1 flex flex-col items-center justify-center relative overflow-hidden"
+        style={{
+          background: 'linear-gradient(135deg, #0369a1 0%, #0ea5e9 35%, #38bdf8 60%, #06b6d4 85%, #0891b2 100%)',
+        }}
+      >
+        {/* Decorative blobs */}
+        <div
+          className="absolute top-[-10%] right-[-5%] w-96 h-96 rounded-full opacity-20"
+          style={{ background: 'radial-gradient(circle, #bae6fd 0%, transparent 70%)' }}
+          aria-hidden="true"
+        />
+        <div
+          className="absolute bottom-[-15%] left-[-8%] w-[500px] h-[500px] rounded-full opacity-15"
+          style={{ background: 'radial-gradient(circle, #e0f2fe 0%, transparent 70%)' }}
+          aria-hidden="true"
+        />
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <button
-            onClick={signInWithGoogle}
-            className="btn-secondary"
-            style={{ justifyContent: 'center', width: '100%', backgroundColor: '#fff', borderColor: 'rgba(124,106,90,0.3)' }}
-            aria-label="Sign in with Google"
-          >
-            <GoogleIcon />
-            <span>Sign in with Google</span>
-          </button>
+        {/* Card */}
+        <div className="relative z-10 w-full max-w-md mx-auto px-4">
+          {/* Logo mark */}
+          <div className="flex justify-center mb-8">
+            <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-3.5 border border-white/30">
+              <PlaneIcon />
+            </div>
+          </div>
 
+          {/* Wordmark */}
+          <div className="text-center mb-10">
+            <h1 className="text-6xl font-extrabold text-white mb-3 tracking-tight" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', letterSpacing: '-0.03em' }}>
+              Nomado
+            </h1>
+            <p className="text-sky-100 text-lg font-medium">
+              Plan your next adventure together
+            </p>
+            <p className="text-sky-200/70 text-sm mt-1.5">
+              Collaborative itineraries, day by day.
+            </p>
+          </div>
+
+          {/* Sign-in card */}
+          <div className="bg-white rounded-2xl p-8 shadow-2xl shadow-sky-900/20">
+            <p className="text-slate-500 text-sm text-center mb-6 font-medium">
+              Sign in to get started
+            </p>
+            <Button
+              variant="secondary"
+              size="lg"
+              onClick={signInWithGoogle}
+              className="w-full justify-center gap-3 h-12 text-slate-700 font-semibold border-slate-200 hover:bg-slate-50"
+              aria-label="Sign in with Google"
+            >
+              <GoogleIcon />
+              Continue with Google
+            </Button>
+
+            <p className="text-slate-400 text-xs text-center mt-6 leading-relaxed">
+              By signing in, you agree to our terms and privacy policy.
+            </p>
+          </div>
         </div>
 
-        <p style={{ color: 'var(--color-text-muted)', fontSize: '12px', marginTop: '32px', lineHeight: '1.6' }}>
-          By signing in, you agree to our terms and privacy policy.
-        </p>
+        {/* Bottom fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-sky-900/10 to-transparent" aria-hidden="true" />
       </div>
     </div>
   )

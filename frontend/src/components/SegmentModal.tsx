@@ -1,15 +1,17 @@
-import { useState } from 'react';
-import { X } from 'lucide-react';
-import type { TripSegment } from '../types';
+import { useState } from 'react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogBody } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input, Label } from '@/components/ui/input'
+import type { TripSegment } from '../types'
 
 interface SegmentModalProps {
-  tripStartDate: string;
-  tripEndDate: string;
-  initial?: TripSegment;
-  onClose: () => void;
-  onSubmit: (data: { title: string; start_date: string; end_date: string }) => Promise<void>;
-  submitting?: boolean;
-  error?: string | null;
+  tripStartDate: string
+  tripEndDate: string
+  initial?: TripSegment
+  onClose: () => void
+  onSubmit: (data: { title: string; start_date: string; end_date: string }) => Promise<void>
+  submitting?: boolean
+  error?: string | null
 }
 
 export default function SegmentModal({
@@ -21,65 +23,85 @@ export default function SegmentModal({
   submitting,
   error,
 }: SegmentModalProps) {
-  const [title, setTitle] = useState(initial?.title ?? '');
-  const [startDate, setStartDate] = useState(initial?.start_date ?? tripStartDate);
-  const [endDate, setEndDate] = useState(initial?.end_date ?? tripEndDate);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [title, setTitle] = useState(initial?.title ?? '')
+  const [startDate, setStartDate] = useState(initial?.start_date ?? tripStartDate)
+  const [endDate, setEndDate] = useState(initial?.end_date ?? tripEndDate)
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const errs: Record<string, string> = {};
-    if (!title.trim()) errs.title = 'Title is required';
-    if (!startDate) errs.startDate = 'Start date is required';
-    if (!endDate) errs.endDate = 'End date is required';
-    if (startDate && endDate && endDate < startDate) errs.endDate = 'End date must be on or after start date';
-    if (startDate < tripStartDate || endDate > tripEndDate) errs.startDate = 'Dates must be within the trip range';
-    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
-    await onSubmit({ title: title.trim(), start_date: startDate, end_date: endDate });
+    e.preventDefault()
+    const errs: Record<string, string> = {}
+    if (!title.trim()) errs.title = 'Title is required'
+    if (!startDate) errs.startDate = 'Start date is required'
+    if (!endDate) errs.endDate = 'End date is required'
+    if (startDate && endDate && endDate < startDate) errs.endDate = 'End date must be on or after start date'
+    if (startDate < tripStartDate || endDate > tripEndDate) errs.startDate = 'Dates must be within the trip range'
+    if (Object.keys(errs).length > 0) { setErrors(errs); return }
+    await onSubmit({ title: title.trim(), start_date: startDate, end_date: endDate })
   }
 
   return (
-    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="modal" style={{ maxWidth: '420px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-          <h2 style={{ fontSize: '20px' }}>{initial ? 'Edit Segment' : 'Add Segment'}</h2>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }} aria-label="Close">
-            <X size={18} color="var(--color-text-muted)" />
-          </button>
-        </div>
+    <Dialog open onOpenChange={open => !open && onClose()}>
+      <DialogContent className="max-w-[420px]">
+        <DialogHeader>
+          <DialogTitle>{initial ? 'Edit Segment' : 'Add Segment'}</DialogTitle>
+        </DialogHeader>
 
         <form onSubmit={handleSubmit} noValidate>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <DialogBody className="pt-5 flex flex-col gap-4">
             <div>
-              <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, marginBottom: '5px' }}>Segment Name</label>
-              <input className="input" type="text" placeholder="e.g. Barcelona" value={title} onChange={e => setTitle(e.target.value)} />
-              {errors.title && <p style={{ color: 'var(--color-secondary)', fontSize: '12px', marginTop: '3px' }}>{errors.title}</p>}
+              <Label htmlFor="seg-title">Segment Name</Label>
+              <Input
+                id="seg-title"
+                type="text"
+                placeholder="e.g. Barcelona"
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+                error={!!errors.title}
+              />
+              {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, marginBottom: '5px' }}>Start Date</label>
-                <input className="input" type="date" min={tripStartDate} max={tripEndDate} value={startDate} onChange={e => setStartDate(e.target.value)} />
-                {errors.startDate && <p style={{ color: 'var(--color-secondary)', fontSize: '12px', marginTop: '3px' }}>{errors.startDate}</p>}
+                <Label htmlFor="seg-start">Start Date</Label>
+                <Input
+                  id="seg-start"
+                  type="date"
+                  min={tripStartDate}
+                  max={tripEndDate}
+                  value={startDate}
+                  onChange={e => setStartDate(e.target.value)}
+                  error={!!errors.startDate}
+                />
+                {errors.startDate && <p className="text-red-500 text-xs mt-1">{errors.startDate}</p>}
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, marginBottom: '5px' }}>End Date</label>
-                <input className="input" type="date" min={tripStartDate} max={tripEndDate} value={endDate} onChange={e => setEndDate(e.target.value)} />
-                {errors.endDate && <p style={{ color: 'var(--color-secondary)', fontSize: '12px', marginTop: '3px' }}>{errors.endDate}</p>}
+                <Label htmlFor="seg-end">End Date</Label>
+                <Input
+                  id="seg-end"
+                  type="date"
+                  min={tripStartDate}
+                  max={tripEndDate}
+                  value={endDate}
+                  onChange={e => setEndDate(e.target.value)}
+                  error={!!errors.endDate}
+                />
+                {errors.endDate && <p className="text-red-500 text-xs mt-1">{errors.endDate}</p>}
               </div>
             </div>
 
-            {error && <p style={{ color: 'var(--color-secondary)', fontSize: '13px' }}>{error}</p>}
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+          </DialogBody>
 
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '4px' }}>
-              <button type="button" className="btn-secondary" onClick={onClose}>Cancel</button>
-              <button type="submit" className="btn-primary" disabled={submitting}>
-                {submitting ? 'Saving…' : initial ? 'Save Changes' : 'Add Segment'}
-              </button>
-            </div>
-          </div>
+          <DialogFooter>
+            <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
+            <Button type="submit" variant="primary" disabled={submitting}>
+              {submitting ? 'Saving…' : initial ? 'Save Changes' : 'Add Segment'}
+            </Button>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
-  );
+      </DialogContent>
+    </Dialog>
+  )
 }
