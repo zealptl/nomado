@@ -1,6 +1,7 @@
 import { Plus, Pencil, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
 import type { TripSegment } from '../types'
 
 interface DayEntry {
@@ -73,25 +74,24 @@ export default function SegmentNav({
 
     return (
       <div
-        className={`flex items-center justify-between px-3 py-2 rounded-xl cursor-pointer transition-all duration-150 group/day ${
+        className={`flex items-center justify-between px-3 py-2 rounded-xl cursor-pointer transition-all duration-150 group/day border-l-[3px] ${
           isActive
-            ? 'bg-sky-50 border border-sky-100'
-            : 'hover:bg-slate-50'
+            ? 'bg-accent border-primary'
+            : 'border-transparent hover:bg-accent/50'
         }`}
-        style={{ borderLeft: isActive ? '3px solid #0ea5e9' : '3px solid transparent' }}
         onClick={() => onDayClick(date)}
         role="button"
         tabIndex={0}
         onKeyDown={e => e.key === 'Enter' && onDayClick(date)}
       >
-        <span className={`text-sm transition-colors ${isActive ? 'text-sky-600 font-semibold' : 'text-slate-500 group-hover/day:text-slate-700'}`}>
+        <span className={`text-sm transition-colors ${isActive ? 'text-primary font-semibold' : 'text-muted-foreground group-hover/day:text-foreground'}`}>
           {formatNavDate(date)}
         </span>
         {badge === 'checkout' && (
-          <Badge variant="orange" className="text-[10px] px-1.5 py-0">checkout</Badge>
+          <Badge variant="secondary" className="text-[10px] px-1.5 py-0">checkout</Badge>
         )}
         {badge === 'checkin' && (
-          <Badge variant="cyan" className="text-[10px] px-1.5 py-0">checkin</Badge>
+          <Badge variant="default" className="text-[10px] px-1.5 py-0">checkin</Badge>
         )}
       </div>
     )
@@ -102,13 +102,13 @@ export default function SegmentNav({
       {groups.map(({ segment, days }) => (
         <div key={segment.id} className="group">
           <div className="flex items-center justify-between mb-1.5 px-1">
-            <h4 className="text-sm font-bold text-slate-700" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+            <h4 className="text-sm font-bold text-foreground font-display">
               {segment.title}
             </h4>
             <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
               <Button
                 variant="ghost"
-                size="icon-sm"
+                size="icon"
                 onClick={() => onEditSegment(segment)}
                 aria-label={`Edit segment ${segment.title}`}
               >
@@ -116,9 +116,9 @@ export default function SegmentNav({
               </Button>
               <Button
                 variant="ghost"
-                size="icon-sm"
+                size="icon"
                 onClick={() => onDeleteSegment(segment)}
-                className="text-slate-400 hover:text-red-500 hover:bg-red-50"
+                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                 aria-label={`Delete segment ${segment.title}`}
               >
                 <Trash2 size={12} />
@@ -134,7 +134,10 @@ export default function SegmentNav({
       {unassignedDays.length > 0 && (
         <div>
           {groups.length > 0 && (
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5 px-1">Unassigned</p>
+            <>
+              <Separator className="mb-3" />
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 px-1">Unassigned</p>
+            </>
           )}
           <div className="flex flex-col gap-0.5">
             {unassignedDays.map(date => <DayLink key={date} date={date} />)}
@@ -147,7 +150,7 @@ export default function SegmentNav({
           variant="ghost"
           size="sm"
           onClick={onAddSegment}
-          className="w-full justify-start text-slate-400 hover:text-sky-500 hover:bg-sky-50 gap-2"
+          className="w-full justify-start text-muted-foreground hover:text-primary hover:bg-accent gap-2"
         >
           <Plus size={14} />
           Add Segment

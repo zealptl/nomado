@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Copy, Check, RefreshCw, Users } from 'lucide-react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { tripsApi } from '../lib/api'
 
 interface InviteModalProps {
@@ -42,8 +44,8 @@ export default function InviteModal({ tripId, onClose }: InviteModalProps) {
       <DialogContent className="max-w-[480px]">
         <DialogHeader>
           <div className="flex items-center gap-3 mb-1">
-            <div className="w-9 h-9 rounded-xl bg-sky-50 flex items-center justify-center flex-shrink-0">
-              <Users size={18} className="text-sky-500" />
+            <div className="w-9 h-9 rounded-xl bg-accent flex items-center justify-center flex-shrink-0">
+              <Users size={18} className="text-primary" />
             </div>
             <DialogTitle>Invite Collaborators</DialogTitle>
           </div>
@@ -52,29 +54,38 @@ export default function InviteModal({ tripId, onClose }: InviteModalProps) {
           </DialogDescription>
         </DialogHeader>
 
-        <DialogBody className="pt-4 flex flex-col gap-4">
+        <div className="flex flex-col gap-4 px-6 pb-2">
           {error && (
-            <p className="text-red-500 text-sm bg-red-50 border border-red-100 rounded-xl px-3 py-2">
-              {error}
-            </p>
+            <Alert variant="destructive">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
           )}
 
           <div className="flex gap-2">
             <Input
               readOnly
               value={loading ? 'Generating link…' : inviteUrl}
-              className="text-sm text-slate-500 bg-slate-50"
+              className="text-sm text-muted-foreground bg-muted/30"
             />
-            <Button
-              variant="primary"
-              onClick={handleCopy}
-              disabled={loading || !inviteUrl}
-              className="flex-shrink-0 gap-2"
-              aria-label="Copy invite link"
-            >
-              {copied ? <Check size={15} /> : <Copy size={15} />}
-              {copied ? 'Copied!' : 'Copy'}
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="default"
+                    onClick={handleCopy}
+                    disabled={loading || !inviteUrl}
+                    className="flex-shrink-0 gap-2"
+                    aria-label="Copy invite link"
+                  >
+                    {copied ? <Check size={15} /> : <Copy size={15} />}
+                    {copied ? 'Copied!' : 'Copy'}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Copy invite link to clipboard</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
 
           <Button
@@ -82,12 +93,12 @@ export default function InviteModal({ tripId, onClose }: InviteModalProps) {
             size="sm"
             onClick={() => generateLink(true)}
             disabled={loading}
-            className="self-start gap-1.5 text-slate-400 hover:text-sky-500"
+            className="self-start gap-1.5 text-muted-foreground hover:text-primary"
           >
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
             Regenerate link
           </Button>
-        </DialogBody>
+        </div>
       </DialogContent>
     </Dialog>
   )

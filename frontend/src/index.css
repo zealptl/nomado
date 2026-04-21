@@ -2,24 +2,65 @@
 @source "./";
 @source "../index.html";
 
+/* Font definitions */
 @theme {
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
 
-  --color-brand-50: #f0f9ff;
-  --color-brand-100: #e0f2fe;
-  --color-brand-200: #bae6fd;
-  --color-brand-300: #7dd3fc;
-  --color-brand-400: #38bdf8;
-  --color-brand-500: #0ea5e9;
-  --color-brand-600: #0284c7;
-  --color-brand-700: #0369a1;
-  --color-brand-800: #075985;
-  --color-brand-900: #0c4a6e;
+/* Nomado Coastal palette — shadcn-compatible CSS custom properties */
+@layer base {
+  :root {
+    /* H S% L% format for hsl(var(--*)) usage in shadcn components */
+    --background: 182 82% 93%;        /* Light Cyan  #e0fbfc */
+    --foreground: 197 20% 18%;        /* Jet Black   #253237 */
+    --card: 187 37% 83%;              /* Light Blue  #c2dfe3 */
+    --card-foreground: 197 20% 18%;
+    --popover: 187 37% 83%;
+    --popover-foreground: 197 20% 18%;
+    --primary: 201 11% 41%;           /* Blue Slate  #5c6b73 */
+    --primary-foreground: 182 82% 93%;
+    --secondary: 201 22% 69%;         /* Cool Steel  #9db4c0 */
+    --secondary-foreground: 197 20% 18%;
+    --muted: 201 22% 80%;
+    --muted-foreground: 201 11% 41%;
+    --accent: 187 37% 88%;
+    --accent-foreground: 197 20% 18%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 199 25% 78%;
+    --input: 199 25% 78%;
+    --ring: 201 11% 41%;
+    --radius: 0.75rem;
+  }
+}
 
-  --color-accent-400: #fb923c;
-  --color-accent-500: #f97316;
-  --color-accent-600: #ea580c;
+/* Map CSS vars → Tailwind color utility classes (Tailwind v4 inline pattern) */
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
 @layer base {
@@ -27,6 +68,7 @@
   *::before,
   *::after {
     box-sizing: border-box;
+    border-color: hsl(var(--border));
   }
 
   html,
@@ -37,16 +79,16 @@
 
   body {
     margin: 0;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-sans);
     font-size: 16px;
-    color: #0f172a;
-    background-color: #f8fafc;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: var(--font-display);
     margin: 0;
     line-height: 1.2;
   }
@@ -57,7 +99,7 @@
   }
 
   :focus-visible {
-    outline: 2px solid #0ea5e9;
+    outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
   }
 

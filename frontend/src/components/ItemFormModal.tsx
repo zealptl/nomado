@@ -1,7 +1,10 @@
 import { useState } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogBody } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { Input, Textarea, Label } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
 import PhotoUploader from './PhotoUploader'
 import type { ItineraryItem } from '../types'
 
@@ -20,14 +23,6 @@ interface ItemFormModalProps {
   onSubmit: (data: Partial<ItineraryItem> & { photos?: string[] }) => Promise<void>
   submitting?: boolean
   error?: string | null
-}
-
-const TAG_COLORS: Record<string, { bg: string; text: string; border: string; activeBg: string }> = {
-  food:       { bg: '#fff7ed', text: '#c2410c', border: '#fed7aa', activeBg: '#f97316' },
-  drinks:     { bg: '#ecfeff', text: '#0e7490', border: '#a5f3fc', activeBg: '#06b6d4' },
-  stay:       { bg: '#f0f9ff', text: '#0369a1', border: '#bae6fd', activeBg: '#0ea5e9' },
-  activity:   { bg: '#f0fdf4', text: '#15803d', border: '#bbf7d0', activeBg: '#10b981' },
-  'going out':{ bg: '#faf5ff', text: '#7c3aed', border: '#ddd6fe', activeBg: '#8b5cf6' },
 }
 
 export default function ItemFormModal({
@@ -81,7 +76,7 @@ export default function ItemFormModal({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} noValidate>
-          <DialogBody className="pt-5 flex flex-col gap-4">
+          <div className="flex flex-col gap-4 px-6 pb-2">
             <div>
               <Label htmlFor="item-title">Title *</Label>
               <Input
@@ -90,9 +85,9 @@ export default function ItemFormModal({
                 placeholder="e.g. Sagrada Família"
                 value={itemTitle}
                 onChange={e => setItemTitle(e.target.value)}
-                error={!!errors.title}
+                
               />
-              {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
+              {errors.title && <p className="text-destructive text-xs mt-1">{errors.title}</p>}
             </div>
 
             <div>
@@ -145,29 +140,20 @@ export default function ItemFormModal({
                 <div className="flex flex-wrap gap-2">
                   {availableTags.map(tag => {
                     const isActive = tags.includes(tag.name)
-                    const colors = TAG_COLORS[tag.name]
                     return (
                       <button
                         key={tag.name}
                         type="button"
                         onClick={() => toggleTag(tag.name)}
-                        className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border cursor-pointer transition-all duration-150"
-                        style={isActive && colors ? {
-                          backgroundColor: colors.activeBg,
-                          color: 'white',
-                          borderColor: colors.activeBg,
-                        } : colors ? {
-                          backgroundColor: colors.bg,
-                          color: colors.text,
-                          borderColor: colors.border,
-                        } : {
-                          backgroundColor: '#f1f5f9',
-                          color: '#475569',
-                          borderColor: '#e2e8f0',
-                        }}
                         aria-pressed={isActive}
+                        className="p-0 border-0 bg-transparent cursor-pointer"
                       >
-                        {tag.name}
+                        <Badge
+                          variant={isActive ? 'default' : 'secondary'}
+                          className="cursor-pointer hover:opacity-80 transition-opacity px-3 py-1 text-xs font-semibold"
+                        >
+                          {tag.name}
+                        </Badge>
                       </button>
                     )
                   })}
@@ -180,12 +166,12 @@ export default function ItemFormModal({
               <PhotoUploader onPhotosChange={setPhotos} />
             </div>
 
-            {error && <p className="text-red-500 text-sm">{error}</p>}
-          </DialogBody>
+            {error && <p className="text-destructive text-sm">{error}</p>}
+          </div>
 
           <DialogFooter>
             <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
-            <Button type="submit" variant="primary" disabled={submitting}>
+            <Button type="submit" variant="default" disabled={submitting}>
               {submitting ? 'Saving…' : 'Save'}
             </Button>
           </DialogFooter>

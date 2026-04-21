@@ -20,6 +20,8 @@ import ItemCard from './ItemCard'
 import ItemFormModal from './ItemFormModal'
 import { itemsApi } from '../lib/api'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
 import type { ItineraryItem } from '../types'
 
 interface Tag {
@@ -91,21 +93,6 @@ function SortableItem({
       <ItemCard item={item} onEdit={onEdit} onDelete={onDelete} />
     </div>
   )
-}
-
-const TAG_COLORS: Record<string, string> = {
-  food: 'bg-orange-100 text-orange-700 border-orange-200 data-[active]:bg-orange-500 data-[active]:text-white',
-  drinks: 'bg-cyan-100 text-cyan-700 border-cyan-200 data-[active]:bg-cyan-500 data-[active]:text-white',
-  stay: 'bg-sky-100 text-sky-700 border-sky-200 data-[active]:bg-sky-500 data-[active]:text-white',
-  activity: 'bg-emerald-100 text-emerald-700 border-emerald-200 data-[active]:bg-emerald-500 data-[active]:text-white',
-  'going out': 'bg-purple-100 text-purple-700 border-purple-200 data-[active]:bg-purple-500 data-[active]:text-white',
-}
-
-function getTagClasses(tag: string, isActive: boolean): string {
-  const base = TAG_COLORS[tag] ?? 'bg-slate-100 text-slate-600 border-slate-200 data-[active]:bg-slate-500 data-[active]:text-white'
-  const [normal, active] = base.split(' data-[active]:')
-  if (isActive) return `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border cursor-pointer transition-all ${active.replace('data-[active]:', '').replace(/ /g, ' ')} bg-opacity-100`
-  return `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border cursor-pointer transition-all ${normal} hover:opacity-80`
 }
 
 const DaySection = forwardRef<HTMLDivElement, DaySectionProps>(
@@ -206,7 +193,7 @@ const DaySection = forwardRef<HTMLDivElement, DaySectionProps>(
     return (
       <div ref={ref} data-day={date} className="mb-10">
         {toastMsg && (
-          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-2.5 rounded-xl text-sm z-50 shadow-xl">
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-foreground text-background px-4 py-2.5 rounded-xl text-sm z-50 shadow-xl">
             {toastMsg}
           </div>
         )}
@@ -214,32 +201,30 @@ const DaySection = forwardRef<HTMLDivElement, DaySectionProps>(
         {/* Day header */}
         <div className="flex items-start justify-between mb-4 gap-3">
           <div className="flex items-start gap-3">
-            {/* Day number dot */}
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
-              style={{ background: 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)' }}
-            >
-              <span className="text-white text-xs font-bold">{new Date(date + 'T00:00:00').getDate()}</span>
+            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center flex-shrink-0 mt-0.5">
+              <span className="text-primary-foreground text-xs font-bold">{new Date(date + 'T00:00:00').getDate()}</span>
             </div>
             <div>
-              <h3
-                className="text-xl font-bold text-slate-900 leading-tight"
-                style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
-              >
+              <h3 className="text-xl font-bold text-foreground leading-tight font-display">
                 {weekday}
               </h3>
-              <p className="text-sm text-slate-400 mt-0.5">{dateLabel}</p>
+              <p className="text-sm text-muted-foreground mt-0.5">{dateLabel}</p>
               {tagsInDay.length > 0 && (
                 <div className="flex flex-wrap gap-1.5 mt-2">
                   {tagsInDay.map(tag => (
                     <button
                       key={tag}
                       type="button"
-                      className={getTagClasses(tag, activeTags.includes(tag))}
                       onClick={() => toggleTag(tag)}
                       aria-pressed={activeTags.includes(tag)}
+                      className="p-0 border-0 bg-transparent cursor-pointer"
                     >
-                      {tag}
+                      <Badge
+                        variant={activeTags.includes(tag) ? 'default' : 'secondary'}
+                        className="cursor-pointer hover:opacity-80 transition-opacity"
+                      >
+                        {tag}
+                      </Badge>
                     </button>
                   ))}
                 </div>
@@ -247,7 +232,7 @@ const DaySection = forwardRef<HTMLDivElement, DaySectionProps>(
             </div>
           </div>
           <Button
-            variant="cta"
+            variant="default"
             size="sm"
             onClick={() => setAddOpen(true)}
             className="flex-shrink-0 mt-1"
@@ -260,13 +245,15 @@ const DaySection = forwardRef<HTMLDivElement, DaySectionProps>(
         {/* Items */}
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={sortedItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
-            <div className="flex flex-col gap-2.5 ml-13" style={{ marginLeft: '52px' }}>
+            <div className="flex flex-col gap-2.5" style={{ marginLeft: '52px' }}>
               {displayedItems.length === 0 && (
-                <div className="py-6 text-center bg-white rounded-xl border-2 border-dashed border-slate-150">
-                  <p className="text-sm text-slate-400">
-                    {activeTags.length > 0 ? 'No items match the selected tags.' : 'Nothing planned yet — click Add to start.'}
-                  </p>
-                </div>
+                <Card className="border-2 border-dashed border-border bg-card/50">
+                  <CardContent className="py-6 text-center">
+                    <p className="text-sm text-muted-foreground">
+                      {activeTags.length > 0 ? 'No items match the selected tags.' : 'Nothing planned yet — click Add to start.'}
+                    </p>
+                  </CardContent>
+                </Card>
               )}
               {displayedItems.map(item => (
                 <SortableItem

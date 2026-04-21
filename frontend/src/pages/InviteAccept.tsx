@@ -1,69 +1,64 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import { inviteApi } from '../lib/api';
+import { useEffect, useState } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth'
+import { inviteApi } from '../lib/api'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
 
 export default function InviteAccept() {
-  const { token } = useParams<{ token: string }>();
-  const { user, loading: authLoading } = useAuth();
-  const navigate = useNavigate();
-  const [status, setStatus] = useState<'idle' | 'accepting' | 'error'>('idle');
-  const [errorMsg, setErrorMsg] = useState('');
+  const { token } = useParams<{ token: string }>()
+  const { user, loading: authLoading } = useAuth()
+  const navigate = useNavigate()
+  const [status, setStatus] = useState<'idle' | 'accepting' | 'error'>('idle')
+  const [errorMsg, setErrorMsg] = useState('')
 
   useEffect(() => {
-    if (authLoading) return;
+    if (authLoading) return
 
     if (!user) {
-      // Redirect to login preserving invite token
-      navigate(`/?invite_token=${token}`, { replace: true });
-      return;
+      navigate(`/?invite_token=${token}`, { replace: true })
+      return
     }
 
     if (!token) {
-      navigate('/dashboard', { replace: true });
-      return;
+      navigate('/dashboard', { replace: true })
+      return
     }
 
-    setStatus('accepting');
+    setStatus('accepting')
     inviteApi
       .accept(token)
       .then(({ tripId }) => navigate(`/trips/${tripId}`, { replace: true }))
       .catch((e: Error) => {
-        setStatus('error');
-        setErrorMsg(e.message);
-      });
-  }, [user, authLoading, token]);
+        setStatus('error')
+        setErrorMsg(e.message)
+      })
+  }, [user, authLoading, token])
 
   if (status === 'error') {
     return (
-      <div style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '24px',
-      }}>
-        <div className="glass-card" style={{ padding: '40px', maxWidth: '420px', textAlign: 'center' }}>
-          <h2 style={{ marginBottom: '12px', fontSize: '22px' }}>Invite Link Error</h2>
-          <p style={{ color: 'var(--color-text-muted)', fontSize: '14px', marginBottom: '24px' }}>
-            {errorMsg}
-          </p>
-          <button className="btn-primary" onClick={() => navigate('/dashboard')}>
-            Go to Dashboard
-          </button>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-background p-6">
+        <Card className="w-full max-w-[420px] text-center">
+          <CardHeader>
+            <CardTitle className="font-display">Invite Link Error</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            <Alert variant="destructive">
+              <AlertDescription>{errorMsg}</AlertDescription>
+            </Alert>
+            <Button variant="default" onClick={() => navigate('/dashboard')}>
+              Go to Dashboard
+            </Button>
+          </CardContent>
+        </Card>
       </div>
-    );
+    )
   }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    }}>
-      <p style={{ color: 'var(--color-text-muted)' }}>Joining trip…</p>
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <p className="text-muted-foreground">Joining trip…</p>
     </div>
-  );
+  )
 }

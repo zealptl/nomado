@@ -7,262 +7,117 @@
 ---
 
 **Project:** Nomado
-**Generated:** 2026-04-18
+**Updated:** 2026-04-20
+**Design Pattern:** shadcn/ui Native — Nomado Coastal palette
 **Category:** Collaborative Travel Itinerary Planner
+
+---
+
+## Core Rule
+
+Every interactive or visual surface MUST use a canonical shadcn/ui component from `frontend/src/components/ui/`.
+No hand-rolled card, modal, or button styling is permitted.
+All colours MUST be expressed through the CSS custom properties below — no hex literals or hard-coded Tailwind colour names (e.g. `bg-sky-500`) in component files.
 
 ---
 
 ## Global Rules
 
-### Color Palette
+### Colour Palette — Nomado Coastal
 
-| Role | Hex | CSS Variable |
-|------|-----|--------------|
-| Primary (pop) | `#5C7A5F` | `--color-primary` |
-| Secondary | `#C67B5C` | `--color-secondary` |
-| Accent | `#D4C4A8` | `--color-accent` |
-| Background | `#F5F0E1` | `--color-background` |
-| Text | `#2C1A0E` | `--color-text` |
-| Muted Text | `#7C6A5A` | `--color-text-muted` |
-| Glass Surface | `rgba(255,255,255,0.6)` | `--color-surface` |
-| Glass Border | `rgba(255,255,255,0.3)` | `--color-border` |
+| Name | Hex | CSS Variable | Role |
+|------|-----|--------------|------|
+| Light Cyan | `#e0fbfc` | `--background` | App / page background |
+| Light Blue | `#c2dfe3` | `--card` | Card / surface background |
+| Cool Steel | `#9db4c0` | `--secondary`, `--muted` | Secondary surfaces, muted elements |
+| Blue Slate | `#5c6b73` | `--primary`, `--muted-foreground` | Primary actions, active states |
+| Jet Black | `#253237` | `--foreground`, `--card-foreground` | All body text |
 
-**Color Notes:** Warm cream base + sage green primary pop. Earth tones throughout. Light mode only.
+**Derived tokens (also CSS variables):**
+
+| CSS Variable | Role |
+|---|---|
+| `--primary-foreground` | Text on primary-coloured surfaces (`#e0fbfc`) |
+| `--secondary-foreground` | Text on secondary surfaces (`#253237`) |
+| `--accent` | Hover / highlight tint |
+| `--accent-foreground` | Text on accent surfaces |
+| `--destructive` | Danger / error (standard red, `hsl(0 84% 60%)`) |
+| `--border` | All border colours |
+| `--input` | Input border colour |
+| `--ring` | Focus ring colour |
+
+**Tailwind utilities** (generated via `@theme inline` in `index.css`):
+Use `bg-background`, `text-foreground`, `bg-primary`, `text-primary`, `text-muted-foreground`, `border-border`, `bg-card`, `text-card-foreground`, `bg-accent`, `bg-destructive`, `text-destructive`, etc.
 
 ### Typography
 
-- **Heading Font:** Playfair Display
-- **Body Font:** Inter
-- **Mood:** warm, elegant, editorial, clean, readable
-- **Google Fonts:** [Playfair Display + Inter](https://fonts.google.com/share?selection.family=Inter:wght@300;400;500;600;700|Playfair+Display:wght@400;500;600;700)
+- **Heading font:** Plus Jakarta Sans (`font-display` utility)
+- **Body font:** Inter (`font-sans` utility)
+- **Usage:** Apply `font-display` to all `<h1>`–`<h4>` and brand text. Body copy inherits `font-sans` from `body`.
 
-**CSS Import:**
-```css
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
-```
-
-**Usage:**
-```css
-h1, h2, h3, h4 { font-family: 'Playfair Display', serif; }
-body, p, span, input, button { font-family: 'Inter', sans-serif; }
-```
-
-### Spacing Variables
+### Radius
 
 | Token | Value | Usage |
-|-------|-------|-------|
-| `--space-xs` | `4px` / `0.25rem` | Tight gaps |
-| `--space-sm` | `8px` / `0.5rem` | Icon gaps, inline spacing |
-| `--space-md` | `16px` / `1rem` | Standard padding |
-| `--space-lg` | `24px` / `1.5rem` | Section padding |
-| `--space-xl` | `32px` / `2rem` | Large gaps |
-| `--space-2xl` | `48px` / `3rem` | Section margins |
-| `--space-3xl` | `64px` / `4rem` | Hero padding |
-
-### Shadow Depths
-
-| Level | Value | Usage |
-|-------|-------|-------|
-| `--shadow-sm` | `0 1px 2px rgba(44,26,14,0.06)` | Subtle lift |
-| `--shadow-md` | `0 4px 12px rgba(44,26,14,0.08)` | Cards, buttons |
-| `--shadow-lg` | `0 10px 32px rgba(92,122,95,0.12)` | Modals, dropdowns |
-| `--shadow-xl` | `0 20px 48px rgba(44,26,14,0.12)` | Hero images, featured cards |
+|---|---|---|
+| `--radius-sm` | `0.5rem` | Small elements (badges, icon buttons) |
+| `--radius-md` | `0.625rem` | Default inputs, tight components |
+| `--radius-lg` | `0.75rem` | Cards, modals |
+| `--radius-xl` | `1rem` | Large hero cards |
 
 ---
 
-## Style: Glassmorphism on Warm Earth Base
+## shadcn Component Catalogue
 
-Frosted glass cards floating over a warm cream background. Clean, calm, and inviting.
+All components are sourced from `frontend/src/components/ui/`. Install new components with `npx shadcn@latest add <name>`.
 
-**Key Effects:**
-```css
-/* Glass card */
-.glass-card {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(44, 26, 14, 0.08);
-}
+| Component | Import | Use for |
+|---|---|---|
+| `Button` | `@/components/ui/button` | All interactive buttons. Variants: `default`, `secondary`, `outline`, `ghost`, `destructive`, `link` |
+| `Card` | `@/components/ui/card` | Trip cards, day section wrappers, empty states |
+| `Dialog` | `@/components/ui/dialog` | All modals (create trip, add item, segment, invite) |
+| `Input` | `@/components/ui/input` | All text / date / time / url inputs |
+| `Textarea` | `@/components/ui/input` (re-exported) | Multi-line text fields |
+| `Label` | `@/components/ui/input` (re-exported) | All form labels |
+| `Badge` | `@/components/ui/badge` | Tags, day count, checkout/checkin markers |
+| `Skeleton` | `@/components/ui/skeleton` | Loading placeholders |
+| `Avatar` | `@/components/ui/avatar` | User avatar in header |
+| `DropdownMenu` | `@/components/ui/dropdown-menu` | Header user menu, item action menu |
+| `Tabs` | `@/components/ui/tabs` | Mobile trip detail tab layout |
+| `Separator` | `@/components/ui/separator` | Visual dividers in sidebar |
+| `Alert` | `@/components/ui/alert` | Error states (invite errors, conflict warnings) |
+| `Tooltip` | `@/components/ui/tooltip` | Icon button labels (copy button) |
+| `Sheet` | `@/components/ui/sheet` | Mobile slide-over panels (future use) |
+| `Progress` | `@/components/ui/progress` | Upload progress (future use) |
+| `Sonner` | `@/components/ui/sonner` | Toast notifications (replaces inline toast divs) |
+| `Select` | `@/components/ui/select` | Dropdown selects in forms |
 
-/* Warm background base */
-body {
-  background-color: #F5F0E1;
-  background-image: radial-gradient(ellipse at 20% 50%, rgba(214,196,168,0.3) 0%, transparent 60%),
-                    radial-gradient(ellipse at 80% 20%, rgba(92,122,95,0.1) 0%, transparent 50%);
-}
-```
+### Button Variant Reference
 
----
-
-## Component Specs
-
-### Buttons
-
-```css
-/* Primary Button */
-.btn-primary {
-  background: #5C7A5F;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 10px;
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 14px;
-  transition: all 200ms ease;
-  cursor: pointer;
-  border: none;
-}
-
-.btn-primary:hover {
-  background: #4A6550;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(92,122,95,0.3);
-}
-
-/* Secondary Button */
-.btn-secondary {
-  background: transparent;
-  color: #5C7A5F;
-  border: 1.5px solid #5C7A5F;
-  padding: 12px 24px;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 14px;
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-
-.btn-secondary:hover {
-  background: rgba(92,122,95,0.08);
-}
-```
-
-### Cards
-
-```css
-.card {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 8px 32px rgba(44,26,14,0.08);
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-
-.card:hover {
-  box-shadow: 0 12px 40px rgba(44,26,14,0.12);
-  transform: translateY(-2px);
-}
-```
-
-### Inputs
-
-```css
-.input {
-  padding: 12px 16px;
-  border: 1px solid rgba(124,106,90,0.25);
-  border-radius: 10px;
-  background: rgba(255,255,255,0.7);
-  font-size: 16px;
-  font-family: 'Inter', sans-serif;
-  color: #2C1A0E;
-  transition: border-color 200ms ease;
-}
-
-.input:focus {
-  border-color: #5C7A5F;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(92,122,95,0.15);
-}
-```
-
-### Modals
-
-```css
-.modal-overlay {
-  background: rgba(44, 26, 14, 0.3);
-  backdrop-filter: blur(4px);
-}
-
-.modal {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.4);
-  border-radius: 20px;
-  padding: 32px;
-  box-shadow: 0 20px 60px rgba(44,26,14,0.15);
-  max-width: 500px;
-  width: 90%;
-}
-```
-
-### Tags / Pills
-
-```css
-.pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 12px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 500;
-  font-family: 'Inter', sans-serif;
-  background: rgba(92,122,95,0.12);
-  color: #5C7A5F;
-  border: 1px solid rgba(92,122,95,0.2);
-  cursor: pointer;
-  transition: all 150ms ease;
-}
-
-.pill.active {
-  background: #5C7A5F;
-  color: white;
-  border-color: #5C7A5F;
-}
-```
+| Variant | When to use |
+|---|---|
+| `default` | Primary action (create, save, invite, add) |
+| `secondary` | Cancel, back, secondary action |
+| `outline` | Upload triggers, dashed-border actions |
+| `ghost` | Icon-only actions, navigation links |
+| `destructive` | Delete, danger actions |
+| `link` | Inline text links |
 
 ---
 
-## Page Pattern
+## Layout Patterns
 
-**Split panel layout (desktop):** Left nav panel (fixed, ~280px) + right scrollable content panel.
-**Mobile:** Two tabs — "Overview" | "Days" — stacked full-width.
+### Desktop (≥ 1024px)
+- Trip detail: fixed left sidebar (`w-72`) + scrollable main content
+- Dashboard: responsive card grid (`minmax(260px, 1fr)`)
 
----
-
-## Anti-Patterns (Do NOT Use)
-
-- ❌ Dark mode — light mode only
-- ❌ Coral/orange primary — already used by Wanderlog
-- ❌ Heavy information density — keep things hidden until needed
-- ❌ Generic stock photos — user uploads their own
-- ❌ Emojis as icons — use SVG icons (Lucide, Heroicons)
-- ❌ Missing cursor:pointer — all clickable elements must have it
-- ❌ Layout-shifting hovers — avoid scale transforms that shift layout
-- ❌ Low contrast text — maintain 4.5:1 minimum ratio
-- ❌ Instant state changes — always use transitions (150-300ms)
-- ❌ Invisible focus states — must be visible for accessibility
+### Mobile (< 1024px)
+- Trip detail: tab bar (Overview / Itinerary) switching between sidebar and main content
 
 ---
 
-## Pre-Delivery Checklist
+## Prohibited Patterns
 
-Before delivering any UI code, verify:
-
-- [ ] No emojis used as icons (use SVG instead)
-- [ ] All icons from Lucide or Heroicons
-- [ ] `cursor-pointer` on all clickable elements
-- [ ] Hover states with smooth transitions (150-300ms)
-- [ ] Text contrast 4.5:1 minimum
-- [ ] Focus states visible for keyboard navigation
-- [ ] `prefers-reduced-motion` respected
-- [ ] Responsive: 375px, 768px, 1024px, 1440px
-- [ ] No content hidden behind fixed navbars
-- [ ] No horizontal scroll on mobile
-- [ ] Glass cards use `backdrop-filter: blur(15px)` with rgba background
-- [ ] Playfair Display for headings, Inter for body
+- `style={{ color: '#hex' }}` — use CSS variable tokens instead
+- `bg-sky-500`, `text-slate-900`, `border-orange-200` — use `bg-primary`, `text-foreground`, `border-border` etc.
+- Hand-rolled `<div className="rounded-2xl bg-white ...">` acting as a Card — use `<Card>`
+- Custom `cva` variant definitions outside of `button.tsx` or `badge.tsx`

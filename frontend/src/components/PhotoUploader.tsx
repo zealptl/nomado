@@ -1,93 +1,79 @@
-import { useRef, useState } from 'react';
-import { Upload, X, ImageIcon } from 'lucide-react';
-import { useImageUpload } from '../hooks/useImageUpload';
+import { useRef, useState } from 'react'
+import { Upload, X, ImageIcon } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { useImageUpload } from '../hooks/useImageUpload'
 
 interface UploadedPhoto {
-  url: string;
-  file: File;
+  url: string
+  file: File
 }
 
 interface PhotoUploaderProps {
-  onPhotosChange: (urls: string[]) => void;
-  maxPhotos?: number;
+  onPhotosChange: (urls: string[]) => void
+  maxPhotos?: number
 }
 
 export default function PhotoUploader({ onPhotosChange, maxPhotos = 10 }: PhotoUploaderProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [photos, setPhotos] = useState<UploadedPhoto[]>([]);
-  const [errors, setErrors] = useState<string[]>([]);
-  const { uploading, upload } = useImageUpload();
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [photos, setPhotos] = useState<UploadedPhoto[]>([])
+  const [errors, setErrors] = useState<string[]>([])
+  const { uploading, upload } = useImageUpload()
 
   async function handleFiles(files: FileList) {
-    const newErrors: string[] = [];
-    const uploaded: UploadedPhoto[] = [];
+    const newErrors: string[] = []
+    const uploaded: UploadedPhoto[] = []
 
     for (const file of Array.from(files)) {
-      if (photos.length + uploaded.length >= maxPhotos) break;
+      if (photos.length + uploaded.length >= maxPhotos) break
       if (file.size > 5 * 1024 * 1024) {
-        newErrors.push(`${file.name}: must be 5MB or smaller`);
-        continue;
+        newErrors.push(`${file.name}: must be 5MB or smaller`)
+        continue
       }
-      const url = await upload(file, 'item-photos');
+      const url = await upload(file, 'item-photos')
       if (url) {
-        uploaded.push({ url, file });
+        uploaded.push({ url, file })
       }
     }
 
-    setErrors(newErrors);
-    const next = [...photos, ...uploaded];
-    setPhotos(next);
-    onPhotosChange(next.map(p => p.url));
+    setErrors(newErrors)
+    const next = [...photos, ...uploaded]
+    setPhotos(next)
+    onPhotosChange(next.map(p => p.url))
   }
 
   function removePhoto(index: number) {
-    const next = photos.filter((_, i) => i !== index);
-    setPhotos(next);
-    onPhotosChange(next.map(p => p.url));
+    const next = photos.filter((_, i) => i !== index)
+    setPhotos(next)
+    onPhotosChange(next.map(p => p.url))
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+    <div className="flex flex-col gap-3">
       <input
         ref={inputRef}
         type="file"
         accept="image/*"
         multiple
-        style={{ display: 'none' }}
+        className="hidden"
         onChange={e => e.target.files && handleFiles(e.target.files)}
       />
 
       {photos.length > 0 && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+        <div className="flex flex-wrap gap-2">
           {photos.map((photo, i) => (
-            <div key={i} style={{ position: 'relative', width: '72px', height: '72px' }}>
+            <div key={i} className="relative w-[72px] h-[72px]">
               <img
                 src={photo.url}
                 alt={`Photo ${i + 1}`}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px', border: '1px solid rgba(124,106,90,0.2)' }}
+                className="w-full h-full object-cover rounded-lg border border-border"
               />
               <button
                 type="button"
                 onClick={() => removePhoto(i)}
-                style={{
-                  position: 'absolute',
-                  top: '-6px',
-                  right: '-6px',
-                  width: '20px',
-                  height: '20px',
-                  borderRadius: '50%',
-                  background: '#2C1A0E',
-                  color: 'white',
-                  border: 'none',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: 0,
-                }}
+                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-foreground text-background border-0 cursor-pointer flex items-center justify-center p-0 hover:bg-foreground/80 transition-colors"
                 aria-label="Remove photo"
               >
-                <X size={12} />
+                <X size={11} />
               </button>
             </div>
           ))}
@@ -95,26 +81,12 @@ export default function PhotoUploader({ onPhotosChange, maxPhotos = 10 }: PhotoU
       )}
 
       {photos.length < maxPhotos && (
-        <button
+        <Button
           type="button"
+          variant="outline"
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '10px 16px',
-            border: '1.5px dashed rgba(124,106,90,0.4)',
-            borderRadius: '10px',
-            background: 'rgba(255,255,255,0.5)',
-            color: 'var(--color-text-muted)',
-            cursor: uploading ? 'default' : 'pointer',
-            fontSize: '14px',
-            fontFamily: 'Inter, sans-serif',
-            transition: 'all 150ms ease',
-            width: '100%',
-            justifyContent: 'center',
-          }}
+          className="w-full border-dashed gap-2 text-muted-foreground hover:text-foreground"
         >
           {uploading ? (
             <>
@@ -127,12 +99,12 @@ export default function PhotoUploader({ onPhotosChange, maxPhotos = 10 }: PhotoU
               Add Photos
             </>
           )}
-        </button>
+        </Button>
       )}
 
       {errors.map((err, i) => (
-        <p key={i} style={{ color: 'var(--color-secondary)', fontSize: '12px' }}>{err}</p>
+        <p key={i} className="text-destructive text-xs">{err}</p>
       ))}
     </div>
-  );
+  )
 }

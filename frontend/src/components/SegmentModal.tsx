@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogBody } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { Input, Label } from '@/components/ui/input'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import type { TripSegment } from '../types'
 
 interface SegmentModalProps {
@@ -48,7 +49,7 @@ export default function SegmentModal({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} noValidate>
-          <DialogBody className="pt-5 flex flex-col gap-4">
+          <div className="flex flex-col gap-4 px-6 pb-2">
             <div>
               <Label htmlFor="seg-title">Segment Name</Label>
               <Input
@@ -57,9 +58,9 @@ export default function SegmentModal({
                 placeholder="e.g. Barcelona"
                 value={title}
                 onChange={e => setTitle(e.target.value)}
-                error={!!errors.title}
+                
               />
-              {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
+              {errors.title && <p className="text-destructive text-xs mt-1">{errors.title}</p>}
             </div>
 
             <div className="grid grid-cols-2 gap-3">
@@ -72,9 +73,9 @@ export default function SegmentModal({
                   max={tripEndDate}
                   value={startDate}
                   onChange={e => setStartDate(e.target.value)}
-                  error={!!errors.startDate}
+                  
                 />
-                {errors.startDate && <p className="text-red-500 text-xs mt-1">{errors.startDate}</p>}
+                {errors.startDate && <p className="text-destructive text-xs mt-1">{errors.startDate}</p>}
               </div>
               <div>
                 <Label htmlFor="seg-end">End Date</Label>
@@ -85,18 +86,18 @@ export default function SegmentModal({
                   max={tripEndDate}
                   value={endDate}
                   onChange={e => setEndDate(e.target.value)}
-                  error={!!errors.endDate}
+                  
                 />
-                {errors.endDate && <p className="text-red-500 text-xs mt-1">{errors.endDate}</p>}
+                {errors.endDate && <p className="text-destructive text-xs mt-1">{errors.endDate}</p>}
               </div>
             </div>
 
-            {error && <p className="text-red-500 text-sm">{error}</p>}
-          </DialogBody>
+            {error && <p className="text-destructive text-sm">{error}</p>}
+          </div>
 
           <DialogFooter>
             <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
-            <Button type="submit" variant="primary" disabled={submitting}>
+            <Button type="submit" variant="default" disabled={submitting}>
               {submitting ? 'Saving…' : initial ? 'Save Changes' : 'Add Segment'}
             </Button>
           </DialogFooter>

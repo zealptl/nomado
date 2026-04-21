@@ -7,6 +7,7 @@ import DaySection from '../components/DaySection'
 import SegmentModal from '../components/SegmentModal'
 import InviteModal from '../components/InviteModal'
 import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import { tripsApi, segmentsApi, itemsApi, tagsApi } from '../lib/api'
 import { useAuth } from '../hooks/useAuth'
 import type { Trip, TripSegment, ItineraryItem } from '../types'
@@ -143,12 +144,12 @@ export default function TripDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-background">
         <AppHeader />
         <div className="flex items-center justify-center h-[calc(100vh-64px)]">
           <div className="flex flex-col items-center gap-3">
-            <div className="w-8 h-8 rounded-full border-2 border-sky-500 border-t-transparent animate-spin" />
-            <p className="text-slate-400 text-sm">Loading trip…</p>
+            <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+            <p className="text-muted-foreground text-sm">Loading trip…</p>
           </div>
         </div>
       </div>
@@ -157,10 +158,10 @@ export default function TripDetailPage() {
 
   if (error || !trip) {
     return (
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-background">
         <AppHeader />
         <div className="flex flex-col items-center justify-center h-[calc(100vh-64px)] gap-4">
-          <p className="text-red-500 text-sm">{error ?? 'Trip not found'}</p>
+          <p className="text-destructive text-sm">{error ?? 'Trip not found'}</p>
           <Button variant="secondary" onClick={() => navigate('/dashboard')}>
             <ArrowLeft size={15} />
             Back to Dashboard
@@ -174,41 +175,40 @@ export default function TripDetailPage() {
   const isOwner = user?.id === trip.owner_id
 
   const sidebar = (
-    <div className="w-72 flex-shrink-0 bg-white border-r border-slate-100 overflow-y-auto h-[calc(100vh-64px)] sticky top-16 flex flex-col">
-      {/* Trip header in sidebar */}
-      <div className="p-4 border-b border-slate-100">
+    <div className="w-72 flex-shrink-0 bg-card border-r border-border overflow-y-auto h-[calc(100vh-64px)] sticky top-16 flex flex-col">
+      <div className="p-4 border-b border-border">
         <button
           onClick={() => navigate('/dashboard')}
-          className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-sky-500 mb-3 transition-colors cursor-pointer"
-          style={{ background: 'none', border: 'none', padding: 0, fontFamily: 'Inter, sans-serif' }}
+          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary mb-3 transition-colors cursor-pointer bg-transparent border-0 p-0 font-sans"
           aria-label="Back to dashboard"
         >
           <ArrowLeft size={13} />
           All trips
         </button>
 
-        {/* Trip cover strip */}
         {trip.cover_image_url && (
-          <div className="h-20 rounded-xl overflow-hidden mb-3 -mx-0">
+          <div className="h-20 rounded-xl overflow-hidden mb-3">
             <img src={trip.cover_image_url} alt={trip.name} className="w-full h-full object-cover" />
           </div>
         )}
 
-        <h2 className="font-bold text-slate-900 text-base leading-snug mb-1" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+        <h2 className="font-bold text-card-foreground text-base leading-snug mb-1 font-display">
           {trip.name}
         </h2>
         <div className="flex items-center gap-1.5 mb-0.5">
-          <MapPin size={12} className="text-sky-500" />
-          <span className="text-xs text-slate-400">{trip.destination}</span>
+          <MapPin size={12} className="text-primary" />
+          <span className="text-xs text-muted-foreground">{trip.destination}</span>
         </div>
         <div className="flex items-center gap-1.5 mb-3">
-          <Calendar size={12} className="text-slate-300" />
-          <span className="text-xs text-slate-400">{formatDateRange(trip.start_date, trip.end_date)}</span>
+          <Calendar size={12} className="text-muted-foreground" />
+          <span className="text-xs text-muted-foreground">{formatDateRange(trip.start_date, trip.end_date)}</span>
         </div>
+
+        <Separator className="mb-3" />
 
         {isOwner && (
           <Button
-            variant="primary"
+            variant="default"
             size="sm"
             onClick={() => setInviteModalOpen(true)}
             className="w-full gap-2"
@@ -219,7 +219,6 @@ export default function TripDetailPage() {
         )}
       </div>
 
-      {/* Day navigation */}
       <div className="flex-1 overflow-y-auto">
         <SegmentNav
           segments={segments}
@@ -235,7 +234,7 @@ export default function TripDetailPage() {
   )
 
   const mainContent = (
-    <div className="flex-1 overflow-y-auto min-w-0 bg-slate-50">
+    <div className="flex-1 overflow-y-auto min-w-0 bg-background">
       <div className="max-w-2xl mx-auto px-6 py-8 pb-24">
         {allDays.map(date => (
           <DaySection
@@ -253,7 +252,7 @@ export default function TripDetailPage() {
   )
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-background">
       <AppHeader />
 
       {/* Desktop layout */}
@@ -273,18 +272,16 @@ export default function TripDetailPage() {
 
       {/* Mobile tab layout */}
       <div className="mobile-tabs hidden flex-col flex-1 overflow-hidden">
-        {/* Tab bar */}
-        <div className="flex border-b border-slate-100 bg-white">
+        <div className="flex border-b border-border bg-card">
           {(['overview', 'days'] as const).map(tab => (
             <button
               key={tab}
               onClick={() => setMobileTab(tab)}
-              className={`flex-1 py-3 text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+              className={`flex-1 py-3 text-sm font-semibold border-b-2 transition-all cursor-pointer font-display bg-transparent ${
                 mobileTab === tab
-                  ? 'border-sky-500 text-sky-600 bg-white'
-                  : 'border-transparent text-slate-400 hover:text-slate-600'
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
               }`}
-              style={{ background: 'none', fontFamily: 'Plus Jakarta Sans, sans-serif' }}
             >
               {tab === 'overview' ? 'Overview' : 'Itinerary'}
             </button>

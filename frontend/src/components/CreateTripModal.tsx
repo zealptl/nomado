@@ -1,8 +1,9 @@
 import { useRef, useState } from 'react'
 import { Image, X } from 'lucide-react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogBody } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { Input, Label } from '@/components/ui/input'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { tripsApi } from '../lib/api'
 import { useImageUpload } from '../hooks/useImageUpload'
 import type { Trip } from '../types'
@@ -73,12 +74,12 @@ export default function CreateTripModal({ onClose, onCreated }: CreateTripModalP
         </DialogHeader>
 
         <form onSubmit={handleSubmit} noValidate>
-          <DialogBody className="pt-5 flex flex-col gap-4">
+          <div className="flex flex-col gap-4 px-6 pb-2">
             {/* Cover photo */}
             <div>
               <Label>
                 Cover Photo{' '}
-                <span className="font-normal text-slate-400">(optional)</span>
+                <span className="font-normal text-muted-foreground">(optional)</span>
               </Label>
               <input
                 ref={coverInputRef}
@@ -88,12 +89,12 @@ export default function CreateTripModal({ onClose, onCreated }: CreateTripModalP
                 onChange={handleCoverFileChange}
               />
               {coverPreview ? (
-                <div className="relative h-32 rounded-xl overflow-hidden border border-slate-200">
+                <div className="relative h-32 rounded-xl overflow-hidden border border-border">
                   <img src={coverPreview} alt="Cover preview" className="w-full h-full object-cover" />
                   <button
                     type="button"
                     onClick={() => { setCoverPreview(null); setCoverImageUrl(undefined) }}
-                    className="absolute top-2 right-2 bg-slate-900/60 hover:bg-slate-900/80 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer transition-colors"
+                    className="absolute top-2 right-2 bg-foreground/60 hover:bg-foreground/80 text-background rounded-full w-6 h-6 flex items-center justify-center cursor-pointer transition-colors"
                     aria-label="Remove cover photo"
                   >
                     <X size={12} />
@@ -104,7 +105,7 @@ export default function CreateTripModal({ onClose, onCreated }: CreateTripModalP
                   type="button"
                   onClick={() => coverInputRef.current?.click()}
                   disabled={uploadingCover}
-                  className="w-full py-5 border-2 border-dashed border-slate-200 rounded-xl text-slate-400 text-sm font-medium flex items-center justify-center gap-2 hover:border-sky-300 hover:text-sky-500 hover:bg-sky-50/50 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-default"
+                  className="w-full py-5 border-2 border-dashed border-border rounded-xl text-muted-foreground text-sm font-medium flex items-center justify-center gap-2 hover:border-primary hover:text-primary hover:bg-accent/50 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-default"
                 >
                   <Image size={16} />
                   {uploadingCover ? 'Uploading…' : 'Upload Cover Photo'}
@@ -120,9 +121,9 @@ export default function CreateTripModal({ onClose, onCreated }: CreateTripModalP
                 placeholder="Summer in Europe"
                 value={name}
                 onChange={e => setName(e.target.value)}
-                error={!!errors.name}
+                
               />
-              {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+              {errors.name && <p className="text-destructive text-xs mt-1">{errors.name}</p>}
             </div>
 
             <div>
@@ -133,9 +134,9 @@ export default function CreateTripModal({ onClose, onCreated }: CreateTripModalP
                 placeholder="Spain, France, Italy"
                 value={destination}
                 onChange={e => setDestination(e.target.value)}
-                error={!!errors.destination}
+                
               />
-              {errors.destination && <p className="text-red-500 text-xs mt-1">{errors.destination}</p>}
+              {errors.destination && <p className="text-destructive text-xs mt-1">{errors.destination}</p>}
             </div>
 
             <div className="grid grid-cols-2 gap-3">
@@ -146,9 +147,9 @@ export default function CreateTripModal({ onClose, onCreated }: CreateTripModalP
                   type="date"
                   value={startDate}
                   onChange={e => setStartDate(e.target.value)}
-                  error={!!errors.startDate}
+                  
                 />
-                {errors.startDate && <p className="text-red-500 text-xs mt-1">{errors.startDate}</p>}
+                {errors.startDate && <p className="text-destructive text-xs mt-1">{errors.startDate}</p>}
               </div>
               <div>
                 <Label htmlFor="trip-end">End Date</Label>
@@ -157,18 +158,18 @@ export default function CreateTripModal({ onClose, onCreated }: CreateTripModalP
                   type="date"
                   value={endDate}
                   onChange={e => setEndDate(e.target.value)}
-                  error={!!errors.endDate}
+                  
                 />
-                {errors.endDate && <p className="text-red-500 text-xs mt-1">{errors.endDate}</p>}
+                {errors.endDate && <p className="text-destructive text-xs mt-1">{errors.endDate}</p>}
               </div>
             </div>
 
-            {errors.submit && <p className="text-red-500 text-sm">{errors.submit}</p>}
-          </DialogBody>
+            {errors.submit && <p className="text-destructive text-sm">{errors.submit}</p>}
+          </div>
 
           <DialogFooter>
             <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
-            <Button type="submit" variant="cta" disabled={submitting}>
+            <Button type="submit" variant="default" disabled={submitting}>
               {submitting ? 'Creating…' : 'Create Trip'}
             </Button>
           </DialogFooter>
